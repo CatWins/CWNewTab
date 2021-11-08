@@ -1,0 +1,20 @@
+{
+
+  "description": "New Tab Page",
+  "manifest_version": 3,
+  "name": "cw_newtab",
+  "version": "1.0",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "content_security_policy": {
+    "default-src": "none",
+    "img-src": "https:",
+    "script-src": "self",
+    "connect-src": "ws://127.0.0.1:9000"
+  },
+  "permissions": [
+    "bookmarks"    
+  ]
+
+}

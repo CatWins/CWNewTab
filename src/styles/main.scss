@@ -1,0 +1,311 @@
+@use "sass:math";
+$color_window_background: #c0c0c0;
+$color_border: #808080;
+$color-menu-selected: #000080;
+
+$icon-width: 3em;
+$icon-height: 5em;
+
+$window-border-width: 0.15em;
+
+$button-small-width: 1.2em;
+$button-small-height: 1.2em;
+
+$window-min-width: 30em;
+$window-min-height: 2.3em;
+
+@mixin border_outline($border-width: $window-border-width) {
+  border: $border-width outset;
+  border-color: white $color_border $color_border white;
+}
+
+@mixin border_inline($border-width: $window-border-width) {
+  border: $border-width inset;
+  border-color: $color_border white white $color_border;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans;
+  font-size: 16px;
+  user-select: none;
+  overflow: hidden;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+  cursor: default;
+
+  &:visited {
+    color: black;
+  }
+}
+
+#desktop {
+  background: #018281;
+  height: 100vh;
+  position: relative;
+}
+
+#drag-hint {
+  width: math.div($icon-width, 16);
+  height: $icon-height;
+  position: absolute;
+  background: red;
+  pointer-events: none;
+  z-index: 9000;
+}
+
+.window {
+  @include border_outline;
+
+  min-width: $window-min-width;
+  min-height: $window-min-height;
+  background: $color_window_background;
+  position: absolute;
+  top: 20em;
+  left: 16em;
+  resize: both;
+  overflow: hidden;
+}
+
+.window-content {
+  @include border_inline;
+
+//  min-width: 30em;
+//  min-height: 18em;
+  width: calc(100% - 0.7em);
+  height: calc(100% - 6.3em);
+  position: relative;
+  background: #fff;
+  margin: 2em 0.2em 1.6em 0.2em;
+  overflow: auto;
+}
+
+.window-head {
+  background: linear-gradient(90deg, #000000, #a0a0a4);
+  color: #fff;
+  width: 100%;
+  height: 2em;
+  line-height: 1.6em;
+
+  &.focused {
+    background: linear-gradient(90deg, #121331, #0d7ec4);
+  }
+}
+
+.window-head > img {
+  width: 1.6em;
+  height: 1.6em;
+  display: inline;
+  vertical-align: middle;
+  margin: 0.2em 0 0.2em 0.2em;
+}
+
+.window-head > span {
+  vertical-align: text-top;
+  font-size: 1.2em;
+}
+
+.button {
+  @include border_outline;
+
+  background: $color_window_background;
+  width: $button-small-width;
+  height: $button-small-height;
+  margin: 0.2em;
+  color: #000;
+  float: right;
+
+  &:after {
+    content: "X";
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    height: 1.2em;
+    line-height: 1.2em;
+    display: block;
+  }
+}
+
+.icon {
+  width: $icon-width;
+  height: $icon-height;
+  padding: 0.1em;
+  position: absolute;
+
+  &:focus-within {
+    min-height: 5em;
+    height: auto;
+    padding: 0;
+    border: 0.1em dashed #f00;
+  }
+}
+
+.icon > a > img {
+  width: 2em;
+  height: 2em;
+  margin: 0.125em 0.5em;
+}
+
+.icon > a:focus-visible {
+  outline: none;
+}
+
+.icon > a > span {
+  display: block;
+  max-height: 2.4em;
+  font-size: 0.8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon:focus-within > a > span {
+  overflow-wrap: break-word;
+  overflow-x: break-word;
+  overflow-y: visible;
+  max-height: none;
+}
+
+.icon > a > span:focus-visible {
+  outline: none;
+}
+
+.menu {
+  @include border_outline;
+  background: $color_window_background;
+  color: black;
+  position: absolute;
+  z-index: 9999;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+
+  .divider {
+    @include border_inline(.075em);
+    margin: .3em 0;
+    padding: 0;
+    &:hover {
+      background: $color_window_background;
+    }
+  }
+
+  .submenu {
+    position: relative;
+    &::after {
+      position: absolute;
+      right: .6em;
+      top: 25%;
+      width: 0;
+      height: 0;
+      content: "";
+      border-top: .35em solid transparent;
+      border-left: .35em solid black;
+      border-bottom: .35em solid transparent;
+    }
+
+    > .menu {
+      top: -$window-border-width;
+      left: calc(100% - .3em);
+      width: 100%;
+      visibility: hidden;
+      transition: 0s visibility;
+      transition-delay: .2s;
+    }
+
+    &:hover {
+      &::after {
+        border-left-color: white;
+      }
+      > .menu {
+        visibility: visible;
+      }
+    }
+  }
+
+  li {
+    padding: .15em 1.4em;
+
+    .checked {
+      position: relative;
+      &::after {
+        position: absolute;
+        right: .6em;
+        top: .2em;
+        content: "";
+        mask: url("../icons/check-sign.svg");
+        background: black;
+        width: 1em;
+        height: 1em;
+      }
+      &:hover {
+        &::after {
+          background: white;
+        }
+      }
+    }
+    &:hover {
+      background: $color_menu_selected;
+      color: white;
+    }
+    &.disabled {
+      background: $color_window_background;
+      color: $color_border;
+      text-shadow: 0.08em 0.08em 0 white;
+      pointer-events: none;
+    }
+  }
+}
+
+::-webkit-scrollbar {
+  width: $button-small-width;
+  height: $button-small-height;
+}
+
+::-webkit-scrollbar-button:single-button {
+  @include border_outline;
+  width: $button-small-width;
+  height: $button-small-height;
+  background: $color_window_background;
+  color: black;
+  &:vertical {
+    &:decrement {
+      background: url("../icons/arrow-up.svg"), $color_window_background;
+    }
+    &:increment {
+      background: url("../icons/arrow-down.svg"), $color_window_background;
+    }
+  }
+  &:horizontal {
+    &:decrement {
+      background: url("../icons/arrow-left.svg"), $color_window_background;
+    }
+    &:increment {
+      background: url("../icons/arrow-right.svg"), $color_window_background;
+    }
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  @include border_outline;
+  background: $color_window_background;
+}
+
+::-webkit-scrollbar-track {
+  background: $color_border;
+}
+
+//::-webkit-scrollbar-track-piece {
+  //track not covered by handle
+//}
+
+::-webkit-scrollbar-corner {
+  @include border_outline;
+  background: $color_window_background;
+}
+
+//::-webkit-resizer {
+//  background: green;
+//}
