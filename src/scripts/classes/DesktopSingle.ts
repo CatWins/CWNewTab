@@ -46,8 +46,10 @@ export const Desktop = {
   async create(): Promise<void> {
     //Creating Grid
     let gridCellReference = Icon.getReference();
+    gridCellReference.show();
     let gridCellWidth = Math.floor(gridCellReference.element.offsetWidth);
     let gridCellHeight = Math.floor(gridCellReference.element.offsetHeight);
+    gridCellReference.hide();
     this.grid = new GridFree(this, this.element.offsetWidth, this.element.offsetHeight, gridCellWidth, gridCellHeight);
     //Filling contents
     this.node = await Bookmarks.getRootNode();

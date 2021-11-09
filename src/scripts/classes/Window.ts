@@ -88,8 +88,10 @@ export class Window extends MovableObject {
     this.element.style.left = this.x + "px";
     this.element.style.top = this.y + "px";
     let gridCellReference = Icon.getReference();
+    gridCellReference.show();
     let gridCellWidth = Math.floor(gridCellReference.element.offsetWidth);
     let gridCellHeight = Math.floor(gridCellReference.element.offsetHeight);
+    gridCellReference.hide();
     this.grid = new GridFree(this, this.width, this.height, gridCellWidth, gridCellHeight);
     for (let icon of contents) {
       this.addIcon(icon);

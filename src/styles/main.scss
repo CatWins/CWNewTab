@@ -150,6 +150,10 @@ a {
   margin: 0.125em 0.5em;
 }
 
+.transparent {
+  opacity: .5;
+}
+
 .icon > a:focus-visible {
   outline: none;
 }
