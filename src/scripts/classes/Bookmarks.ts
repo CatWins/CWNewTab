@@ -16,7 +16,6 @@ export class Bookmarks {
 
   static async getFolderContents(nodes: BookmarkTreeNode[]): Promise<Icon[]> {
     let res = [];
-    console.log(nodes);
     for (let node of nodes) {
       let is_folder = (!node.url);
       if (is_folder) {

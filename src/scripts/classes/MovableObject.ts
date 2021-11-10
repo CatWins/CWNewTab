@@ -1,10 +1,6 @@
-import { GridType } from "../enums/GridType.js";
 import { Target } from "../enums/Target.js";
 import { Container } from "../types/Container.js";
-import { Position } from "../types/Position.js";
-import { Desktop as desktop } from "./DesktopSingle.js";
-import { Grid } from "./Grid.js";
-import { Icon } from "./Icon.js";
+import { PositionDB } from "./db/PositionDB.js";
 
 export class MovableObject {
   static mouseX: number;
@@ -27,7 +23,7 @@ export class MovableObject {
 
   constructor(id: string, name: string, x: number, y: number) {
     this._id = id; this.name = name; this.x = x; this.y = y;
-    this.loadPosition();
+    PositionDB.load(this, {"x": x, "y": y});
   }
 
   get id(): string {return MovableObject.PREFIX + this._id;}
@@ -41,19 +37,11 @@ export class MovableObject {
 
   setPosition(x: number, y: number): void {
     this.x = x; this.y = y;
-    this.savePosition();
+    PositionDB.save(this);
     this.element.style.left = x + "px";
     this.element.style.top = y + "px";
   }
   updatePosition(x: number, y: number): void {this.x = x; this.y = y;}
-  savePosition(): void {window.localStorage.setItem(this.id + "_position", '{"x":' + this.x + ', "y":' + this.y + '}')}
-  loadPosition(): void {
-    let position = JSON.parse(window.localStorage.getItem(this.id + "_position")) as Position;
-    if (position) {
-      this.x = position.x;
-      this.y = position.y;
-    }
-  }
 
   show(): void {this.element.style.display = null;}
   hide(): void {this.element.style.display = "none";}
@@ -97,6 +85,6 @@ export class MovableObject {
   dragStop(e: MouseEvent): void {
     MovableObject.is_dragged = false;
     this.updatePosition(this.element.offsetLeft, this.element.offsetTop);
-    this.savePosition();
+    PositionDB.save(this);
   }
 }

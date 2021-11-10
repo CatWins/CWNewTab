@@ -8,6 +8,8 @@ import { Target } from "../enums/Target.js";
 import type { BookmarkTreeNode } from "../types/chrome";
 import { GridFree } from "./GridFree.js";
 import { GridType } from "../enums/GridType.js";
+import { DimensionsDB } from "./db/DimensionsDB.js";
+import { GridTypeDB } from "./db/GridTypeDB.js";
 
 export class Window extends MovableObject {
   static PREFIX = "_w_";
@@ -19,7 +21,7 @@ export class Window extends MovableObject {
   content: HTMLDivElement;
   filler: HTMLDivElement;
 //  draggable: HTMLElement;
-  grid: Grid;
+  _grid: Grid;
   node: BookmarkTreeNode;
   _zIndex: number;
   width: number;
@@ -34,7 +36,7 @@ export class Window extends MovableObject {
     this.content = undefined;
     this.filler = undefined;
     this.draggable = undefined;
-    this.grid = undefined;
+    this._grid = undefined;
     this.node = args.node;
     this._zIndex = 0;
     this.width = undefined;
@@ -49,6 +51,11 @@ export class Window extends MovableObject {
   set zIndex(n: number) {
     this._zIndex = n;
     this.element.style.zIndex = this._zIndex.toString();
+  }
+  get grid(): Grid {return this._grid;}
+  set grid(grid: Grid) {
+    this._grid = grid;
+    GridTypeDB.save(this);
   }
 
   async create() {
@@ -78,13 +85,15 @@ export class Window extends MovableObject {
       '</div>'
     );
     this.element = document.getElementById(this.id) as HTMLDivElement;
-    Window.resizeObserver.observe(this.element);
     this.head = this.element.getElementsByClassName("window-head")[0] as HTMLDivElement;
     this.draggable = this.head;
     this.content = this.element.getElementsByClassName("window-content")[0] as HTMLDivElement;
     this.filler = this.content.getElementsByClassName("window-filler")[0] as HTMLDivElement;
     this.width = this.content.offsetWidth;
     this.height = this.content.offsetHeight;
+    DimensionsDB.load(this);
+    this.element.style.width = this.width + "px";
+    this.element.style.height = this.height + "px";
     this.element.style.left = this.x + "px";
     this.element.style.top = this.y + "px";
     let gridCellReference = Icon.getReference();
@@ -92,18 +101,20 @@ export class Window extends MovableObject {
     let gridCellWidth = Math.floor(gridCellReference.element.offsetWidth);
     let gridCellHeight = Math.floor(gridCellReference.element.offsetHeight);
     gridCellReference.hide();
-    this.grid = new GridFree(this, this.width, this.height, gridCellWidth, gridCellHeight);
+    this._grid = new GridFree(this, this.width, this.height, gridCellWidth, gridCellHeight);
     for (let icon of contents) {
       this.addIcon(icon);
       icon.create(this);
       this.grid.addCell(icon);
     }
+    GridTypeDB.load(this);
     this.makeDraggable();
     let buttonClose = this.element.getElementsByClassName("button-close")[0];
     buttonClose.addEventListener("mousedown", (e) => {e.stopPropagation();});
     buttonClose.addEventListener("click", (e) => {this.close(); e.stopPropagation();});
     this.filler.style.width = this.content.scrollWidth + "px";
     this.filler.style.height = this.content.scrollHeight + "px";
+    Window.resizeObserver.observe(this.element);
     desktop.registerConteiner(this);
     this.focus();
 
@@ -158,10 +169,10 @@ export class Window extends MovableObject {
   }
 
   resize(width: number, height: number): void {
-    let dw = width - this.width;
-    let dh = height - this.height;
-    this.width = width;
-    this.height = height;
+    if (width == 0 || height == 0) return;
+    this.width = this.element.clientWidth;
+    this.height = this.element.clientHeight;
+    DimensionsDB.save(this);
     if (this.grid.type == GridType.STRICT) {
       this.grid.redefine(this.content.clientWidth, this.content.clientHeight);
       this.filler.style.width = null;

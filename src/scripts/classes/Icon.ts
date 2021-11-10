@@ -7,6 +7,7 @@ import { Container } from "../types/Container.js";
 import { BookmarkTreeNode } from "../types/chrome.js";
 import { GridType } from "../enums/GridType.js";
 import { Grid } from "./Grid.js";
+import { PositionDB } from "./db/PositionDB.js";
 
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
@@ -185,7 +186,6 @@ export class Icon extends MovableObject {
       } else {
 
         //Move inside the same grid
-        console.log(refX, MovableObject.clickedOffsetX, this.container.offsetX)
         if (this.container.grid.type == GridType.FREE) {
           this.setPosition(refX - this.container.offsetX, refY - this.container.offsetY);
         } else {
@@ -198,7 +198,7 @@ export class Icon extends MovableObject {
       this.element.style.zIndex = null;
       MovableObject.is_dragged = false;
       this.updatePosition(this.element.offsetLeft, this.element.offsetTop);
-      this.savePosition();
+      PositionDB.save(this);
     }
   }
 

@@ -7,6 +7,7 @@ import { Container } from "../types/Container";
 import { BookmarkTreeNode } from "../types/chrome.js";
 import { Grid } from "./Grid.js";
 import { GridFree } from "./GridFree.js";
+import { GridTypeDB } from "./db/GridTypeDB.js";
 
 const SYSTEM_FOLDERS_IDS = ["bookmarks"];
 const windows = {};
@@ -19,7 +20,7 @@ const content = element;
 const node: BookmarkTreeNode = undefined;
 const _contents = {};
 const contextMenu = ContextMenu.init();
-const grid: Grid = undefined;
+const _grid: Grid = undefined;
 
 const offsetX = 0;
 const offsetY = 0;
@@ -37,11 +38,17 @@ export const Desktop = {
   node,
   _contents,
   contextMenu,
-  grid,
+  _grid,
 
   offsetX,
   offsetY,
   zIndex,
+
+  get grid(): Grid {return this._grid;},
+  set grid(grid: Grid) {
+    GridTypeDB.save(this);
+    this._grid = grid;
+  },
 
   async create(): Promise<void> {
     //Creating Grid
@@ -50,7 +57,7 @@ export const Desktop = {
     let gridCellWidth = Math.floor(gridCellReference.element.offsetWidth);
     let gridCellHeight = Math.floor(gridCellReference.element.offsetHeight);
     gridCellReference.hide();
-    this.grid = new GridFree(this, this.element.offsetWidth, this.element.offsetHeight, gridCellWidth, gridCellHeight);
+    this._grid = new GridFree(this, this.element.offsetWidth, this.element.offsetHeight, gridCellWidth, gridCellHeight);
     //Filling contents
     this.node = await Bookmarks.getRootNode();
     let contents = await Bookmarks.getFolderContents(this.node);
@@ -59,6 +66,7 @@ export const Desktop = {
       icon.create(this);
       this.grid.addCell(icon);
     }
+    GridTypeDB.load(this);
 
     this.element.addEventListener("contextmenu", (e: MouseEvent) => {
       e.preventDefault();
