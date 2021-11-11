@@ -1,7 +1,7 @@
 import { Favicon } from "../enums/Favicon.js";
 import { Desktop as desktop } from "./DesktopSingle.js";
 import { MovableObject } from "./MovableObject.js";
-import { Window } from "./Window.js";
+import { WindowContainer } from "./windows/WindowContainer.js";
 import { Target } from "../enums/Target.js";
 import { Container } from "../types/Container.js";
 import { BookmarkTreeNode } from "../types/chrome.js";
@@ -58,9 +58,9 @@ export class Icon extends MovableObject {
     this.makeDraggable();
     if (this.node != undefined) {
       this.element.addEventListener("dblclick", () => {
-        let w = desktop.getContainer(Window.PREFIX + this.nodeId) as Window;
+        let w = desktop.getContainer(WindowContainer.PREFIX + this.nodeId) as WindowContainer;
         if (w == undefined) {
-          w = new Window(this.nodeId, this.name, 180, 160, {"node": this.node});
+          w = new WindowContainer(this.nodeId, this.name, 180, 160, {"node": this.node});
           w.create();
         } else {
           if (w.element.hidden) w.open();

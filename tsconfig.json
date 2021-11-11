@@ -9,6 +9,7 @@
   "include": ["src/scripts/**/*.ts"],
   "exclude": [
     "src/scripts/types/**/*.ts",
+    "src/scripts/interfaces/**/*.ts",
     "src/scripts/enums/**/*.ts"
   ]
 }

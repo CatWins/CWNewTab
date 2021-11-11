@@ -8,6 +8,7 @@ import { BookmarkTreeNode } from "../types/chrome.js";
 import { Grid } from "./Grid.js";
 import { GridFree } from "./GridFree.js";
 import { GridTypeDB } from "./db/GridTypeDB.js";
+import { IFocusable } from "../interfaces/IFocusable.js";
 
 const SYSTEM_FOLDERS_IDS = ["bookmarks"];
 const windows = {};
@@ -102,12 +103,12 @@ export const Desktop = {
     this._contents[icon.id] = undefined;
   },
 
-  getContainerFocused(): Container {
+  getContainerFocused(): IFocusable {
     if (this.isFocused()) return this;
     return this.windows[this.order[this.order.length - 1]];
   },
 
-  setContainerFocused(container: Container) {
+  setContainerFocused(container: IFocusable) {
     this.getContainerFocused().unfocus();
     if (container.id == this.order[container.zIndex]) {
       this.order.push(...this.order.splice(container.zIndex, 1));
@@ -149,7 +150,7 @@ export const Desktop = {
     if (this.isFocused() && this.order.length > 0) this.order.pop();
   },
 
-  registerConteiner(container: Container): void {
+  registerContainer(container: IFocusable): void {
     if (this.windows[container.id] == undefined) {
       if (this.order.length > 0) this.getContainerFocused().unfocus();
       this.windows[container.id] = container;
