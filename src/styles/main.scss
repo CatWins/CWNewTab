@@ -24,6 +24,12 @@ $window-min-height: 2.3em;
   border-color: $color_border white white $color_border;
 }
 
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -61,28 +67,56 @@ a {
 .window {
   @include border_outline;
 
-  min-width: $window-min-width;
-  min-height: $window-min-height;
   background: $color_window_background;
   position: absolute;
   top: 20em;
   left: 16em;
-  resize: both;
   overflow: hidden;
+
+  .window-content {
+    margin: 1em;
+  }
+  
 }
 
-.window-content {
-  @include border_inline;
+.window-container {
+  min-width: $window-min-width;
+  min-height: $window-min-height;
+  resize: both;
 
-//  min-width: 30em;
-//  min-height: 18em;
-  width: calc(100% - 0.7em);
-  height: calc(100% - 6.3em);
-  position: relative;
-  background: #fff;
-  margin: 2em 0.2em 1.6em 0.2em;
-  overflow: auto;
+  .window-content {
+    @include border_inline;
+
+    width: calc(100% - 0.7em);
+    height: calc(100% - 6.3em);
+    position: relative;
+    background: #fff;
+    margin: 2em 0.2em 1.6em 0.2em;
+    overflow: auto;
+  }
 }
+
+.window-error {
+  width: max-content;
+  white-space: nowrap;
+
+  .window-content {
+    margin: 1em;
+
+    img {
+      width: 4em;
+      height: 4em;
+      margin: 0 .6em 0 0;
+      float: left;
+    }
+
+    .message {
+      margin: 0 0 0 .6em;
+      float: right;
+    }
+  }
+}
+
 
 .window-head {
   background: linear-gradient(90deg, #000000, #a0a0a4);
@@ -101,22 +135,26 @@ a {
   height: 1.6em;
   display: inline;
   vertical-align: middle;
-  margin: 0.2em 0 0.2em 0.2em;
+  margin: 0.2em;
 }
 
 .window-head > span {
   vertical-align: text-top;
   font-size: 1.2em;
+  margin: 0.2em;
 }
 
 .button {
   @include border_outline;
 
   background: $color_window_background;
-  width: $button-small-width;
-  height: $button-small-height;
   margin: 0.2em;
   color: #000;
+}
+
+.button-close {
+  width: $button-small-width;
+  height: $button-small-height;
   float: right;
 
   &:after {
@@ -128,6 +166,12 @@ a {
     line-height: 1.2em;
     display: block;
   }
+}
+
+.button-ok {
+  width: fit-content;
+  padding: .15em 3em;
+  margin: 1em auto 0;
 }
 
 .icon {
@@ -184,6 +228,7 @@ a {
   position: absolute;
   z-index: 9999;
   list-style-type: none;
+  white-space: nowrap;
   margin: 0;
   padding: 0;
 

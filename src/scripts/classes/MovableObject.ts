@@ -23,7 +23,7 @@ export class MovableObject {
 
   constructor(id: string, name: string, x: number, y: number) {
     this._id = id; this.name = name; this.x = x; this.y = y;
-    PositionDB.load(this, {"x": x, "y": y});
+    PositionDB.load(this, {"x": this.x, "y": this.y});
   }
 
   get id(): string {return MovableObject.PREFIX + this._id;}

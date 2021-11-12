@@ -1,4 +1,4 @@
-import { Favicon } from "../enums/Favicon.js";
+import { IconPath } from "../enums/IconPath.js";
 import { Desktop as desktop } from "./DesktopSingle.js";
 import { MovableObject } from "./MovableObject.js";
 import { WindowContainer } from "./windows/WindowContainer.js";
@@ -25,7 +25,7 @@ export class Icon extends MovableObject {
     this.type = Target.ICON;
     this.url = args.url;
     this.node = args.node;
-    this.favicon = (this.url == undefined) ? Favicon.FOLDER : this.url.split("/").filter((_, i) => (i < 3)).join("/") + "/favicon.ico";
+    this.favicon = (this.url == undefined) ? IconPath.FOLDER : this.url.split("/").filter((_, i) => (i < 3)).join("/") + "/favicon.ico";
     this.html = 
       '<div id="' + this.id + '" class="icon">' +
         '<a href="#">' +
@@ -42,7 +42,7 @@ export class Icon extends MovableObject {
 
   get id(): string {return Icon.PREFIX + this._id;}
 
-  create(container: Container = desktop): void {
+  async create(container: Container = desktop): Promise<void> {
     this.container = container;
     container.content.insertAdjacentHTML('beforeend', this.html);
     this.element = document.getElementById(this.id) as HTMLDivElement;
@@ -52,7 +52,7 @@ export class Icon extends MovableObject {
     this.nameElement = this.element.getElementsByTagName("span")[0];
     this.icon = this.element.getElementsByTagName("img")[0];
     this.icon.addEventListener('error', () => {
-      this.icon.src = Favicon.DEFAULT;
+      this.icon.src = IconPath.DEFAULT;
     });
     this.icon.src = this.favicon;
     this.makeDraggable();

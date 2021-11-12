@@ -116,6 +116,10 @@ export class ContextMenu {
   }
 
   static open(x: number, y: number, target: ActionTarget): void {
+    if (target.type == Target.DEFAULT) {
+      this.close();
+      return;
+    }
     this.setTarget(target);
     this.x = x;
     this.y = y;

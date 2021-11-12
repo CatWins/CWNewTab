@@ -1,6 +1,6 @@
 import { Desktop as desktop } from "../DesktopSingle.js";
 import { Bookmarks } from "../Bookmarks.js";
-import { Favicon } from "../../enums/Favicon.js";
+import { IconPath } from "../../enums/IconPath.js";
 import { Grid } from "../Grid.js";
 import { Icon } from "../Icon.js";
 import { Target } from "../../enums/Target.js";
@@ -34,9 +34,9 @@ export class WindowContainer extends WindowGeneric {
     this.height = undefined;
     this._contents = {};
     this.html = 
-      '<div id="' + this.id + '" class="window">' +
+      '<div id="' + this.id + '" class="window window-container">' +
         '<div class="window-head">' +
-          '<img src=' + Favicon.FOLDER + '>' +
+          '<img src=' + IconPath.FOLDER + '>' +
           '<span>' + this.name + '</span>' +
           '<div class="button button-close"></div>' +
         '</div>' +
@@ -56,7 +56,7 @@ export class WindowContainer extends WindowGeneric {
   }
 
   async create() {
-    super.create();
+    await super.create();
     let contents: Icon[] = [];
     if (desktop.SYSTEM_FOLDERS_IDS.includes(this.id)) {
       console.log("Windows with custom functionality not supported");
@@ -85,7 +85,7 @@ export class WindowContainer extends WindowGeneric {
     this._grid = new GridFree(this, this.width, this.height, gridCellWidth, gridCellHeight);
     for (let icon of contents) {
       this.addIcon(icon);
-      icon.create(this);
+      await icon.create(this);
       this.grid.addCell(icon);
     }
     GridTypeDB.load(this);

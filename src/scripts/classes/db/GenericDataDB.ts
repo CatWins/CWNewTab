@@ -1,3 +1,5 @@
+import { EventEmitter } from "../EventEmitter.js";
+
 export class GenericDataDB {
   static tag: string;
   static data: any;
@@ -28,7 +30,7 @@ export class GenericDataDB {
         }
       }
     } catch(error) {
-      alert(error.message + "\n" + error.stack);
+      EventEmitter.dispatchErrorEvent(error);
       return false;
     }
     return true;
@@ -46,7 +48,7 @@ export class GenericDataDB {
       if (!this.isValid(data)) data = fallback || this.data;
       this.setData(obj, data);
     } catch (error) {
-      alert(error.stack);
+      EventEmitter.dispatchErrorEvent(error);
     }
   }
 }

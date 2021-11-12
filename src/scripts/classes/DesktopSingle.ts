@@ -64,7 +64,7 @@ export const Desktop = {
     let contents = await Bookmarks.getFolderContents(this.node);
     for (let icon of contents) {
       this.addIcon(icon);
-      icon.create(this);
+      await icon.create(this);
       this.grid.addCell(icon);
     }
     GridTypeDB.load(this);
@@ -157,6 +157,12 @@ export const Desktop = {
       this.order.push(container.id);
       container.zIndex = this.order.length - 1;
     }
+  },
+
+  unregisterContainer(container: IFocusable): void {
+    this.setContainerFocused(container);
+    this.order.pop();
+    this.windows[container.id] = undefined;
   },
 
   getContainer(id: string): Container {
