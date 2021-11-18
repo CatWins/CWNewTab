@@ -1,5 +1,7 @@
 import { Icon } from "./Icon.js";
-import type { BookmarkTreeNode } from "../types/chrome";
+import type { BookmarkTreeNode, BookmarkCreateDetails } from "../types/chrome";
+import { EventEmitter } from "./EventEmitter.js";
+import { FolderContentsDelta } from "../types/FolderContentsDelta";
 
 var browser: any = browser || chrome;
 
@@ -42,5 +44,43 @@ export class Bookmarks {
       }
     }
     return res;
+  }
+
+  static async getFolderContentsDelta(folderNode: BookmarkTreeNode): Promise<FolderContentsDelta> {
+    try {
+      let newContents = await browser.bookmarks.getChildren(folderNode.id) as BookmarkTreeNode[];
+      let addedNodes = newContents.filter(e => folderNode.children.findIndex(other => e.id == other.id) == -1);
+      let removedNodes = folderNode.children.filter(e => newContents.findIndex(other => e.id == other.id) == -1);
+      folderNode.children = newContents;
+      return {
+        node: folderNode,
+        added: await this.getFolderContents(addedNodes),
+        removed: removedNodes.map(e => Icon.PREFIX + "_bookmark_" + e.id)
+      };
+    } catch (error) {
+      EventEmitter.dispatchErrorEvent(error);
+    }
+  }
+
+  static async createNode(parent: BookmarkTreeNode, title: string, url: string = null): Promise<BookmarkTreeNode> {
+    let createDetails: BookmarkCreateDetails = {
+      index: 0,
+      parentId: parent.id,
+      title: title,
+      url: url
+    };
+    try {
+      return await browser.bookmarks.create(createDetails);
+    } catch(error) {
+      EventEmitter.dispatchErrorEvent(error);
+    }
+  }
+
+  static async createBookmark(parent: BookmarkTreeNode, title: string, url: string): Promise<BookmarkTreeNode> {
+    return await this.createNode(parent, title, url);
+  }
+
+  static async createFolder(parent: BookmarkTreeNode, title: string): Promise<BookmarkTreeNode> {
+    return await this.createNode(parent, title);
   }
 }

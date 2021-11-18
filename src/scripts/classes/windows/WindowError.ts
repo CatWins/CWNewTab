@@ -29,7 +29,7 @@ export class WindowError extends WindowGeneric {
             '<img src="' + IconPath.ERROR + '">' +
             '<div class="message">' + message + '</div>' +
           '</div>' +
-          '<div class="button button-ok">OK</div>' +
+          '<div class="button button-auto button-ok">OK</div>' +
         '</div>' +
       '</div>';
   }

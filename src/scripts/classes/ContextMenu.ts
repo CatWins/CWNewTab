@@ -9,6 +9,7 @@ import { GridType } from "../enums/GridType.js";
 import { GridSnap } from "./GridSnap.js";
 import { GridStrict } from "./GridStrict.js";
 import { GridFree } from "./GridFree.js";
+import { WindowBookmarkCreate } from "./windows/WindowBookmarkCreate.js";
 
 export class ContextMenu {
   static _menu: (MenuItem | MenuItemDivider)[];
@@ -36,12 +37,8 @@ export class ContextMenu {
     
     //Add Bookmark
     itemCreateBookmark.addEventListener("click", (e: MouseEvent) => {
-      let icon = new Icon(Math.random().toString(), "pogchamp", 0, 0, { 'url': 'https://netflix.com' });
-      icon.create(itemCreateBookmark.currentTarget as Container);
-      icon.container.addIcon(icon);
-      if (icon.container.grid != undefined) {
-        icon.container.grid.addCell(icon);
-      }
+      let w = new WindowBookmarkCreate(0, 0, itemCreateBookmark.currentTarget as Container, e.clientX, e.clientY);
+      w.create().then(() => w.center());
     });
 
     //Remove Bookmark

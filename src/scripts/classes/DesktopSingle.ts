@@ -9,6 +9,7 @@ import { Grid } from "./Grid.js";
 import { GridFree } from "./GridFree.js";
 import { GridTypeDB } from "./db/GridTypeDB.js";
 import { IFocusable } from "../interfaces/IFocusable.js";
+import { FolderContentsDelta } from "../types/FolderContentsDelta.js";
 
 const SYSTEM_FOLDERS_IDS = ["bookmarks"];
 const windows = {};
@@ -101,6 +102,10 @@ export const Desktop = {
 
   removeIcon(icon: Icon): void {
     this._contents[icon.id] = undefined;
+  },
+
+  applyDelta(delta: FolderContentsDelta): void {
+    //TODO: copy implementation from WindowContainer class
   },
 
   getContainerFocused(): IFocusable {

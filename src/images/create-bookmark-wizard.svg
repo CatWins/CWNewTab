@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 190">
+  <rect x="0" y="0" width="100%" height="100%" fill="#008080"></rect>
+
+  <g id="box">
+    <path d="M -35 57 L -35 22 30 -43 30 -8 Z" fill="#553f00"></path>
+    <path d="M 30 -43 L 30 -8 85 25 85 -10 Z" fill="#553f00"></path>
+    <use href="#file" x="-40" y="-90"></use>
+    <path d="M 20 90 L 85 25 85 -10 20 55 Z" fill="#aa7f55"></path>
+    <path d="M 20 90 L -35 57 -35 22 20 55 Z" fill="#7f3f00"></path>
+  </g>
+
+  <g id="cup">
+    <path d="M 92.5 60 A 12.5 10 15 1 0 67.5 60 L 67.5 42.5 A 12.5 10 15 1 1 92.5 42.5 Z" fill="#808080"></path>
+    <ellipse cx="0" cy="0" rx="12.5" ry="10" fill="#7f1f00" transform="translate(80 50) rotate(15)"></ellipse>
+    <path d="M 92.5 60 A 12.5 10 15 1 1 67.5 60 L 67.5 42.5 A 12.5 10 15 1 0 92.5 42.5 Z" fill="#c0c0c0"></path>
+    <path d="M 90 53 A 5 3 45 1 1 90 65 A 1 1 45 1 1 90 63 A 1.67 1 45 1 0 90 56 A 1 1 45 1 1 90 53 Z" fill="#a0a0a4"></path>
+  </g>
+
+  <g id="file">
+    <path d="M 60 160 L 120 100 70 70 10 130 Z" fill="white" stroke="#c0c0c0" stroke-width="1"></path>
+    <line x1="70" y1="80" x2="107.5" y2="102.5" stroke="#808080" stroke-width="1"></line>
+    <line x1="65" y1="85" x2="102.5" y2="107.5" stroke="#808080" stroke-width="1"></line>
+    <line x1="60" y1="90" x2="97.5" y2="112.5" stroke="#808080" stroke-width="1"></line>
+    <line x1="55" y1="95" x2="92.5" y2="117.5" stroke="#808080" stroke-width="1"></line>
+    <line x1="50" y1="100" x2="87.5" y2="122.5" stroke="#808080" stroke-width="1"></line>
+    <line x1="45" y1="105" x2="82.5" y2="127.5" stroke="#808080" stroke-width="1"></line>
+    <line x1="40" y1="110" x2="77.5" y2="132.5" stroke="#808080" stroke-width="1"></line>
+  </g>
+ 
+  <g id="pencil">
+    <path d="M 45.5 84.5 L 38.5 88.5 41.5 91.5 Z" fill="#aa7f55"></path>
+    <path d="M 45.5 84.5 L 42 86.5 43.5 88 Z" fill="black"></path>
+    <ellipse cx="0" cy="0" rx="1" ry=".6" fill="black" transform="translate(43 87) rotate(45)"></ellipse>
+    <line x1="40" y1="90" x2="10.5" y2="119.5" stroke="#7f0000" stroke-width="4" stroke-linecap="round"></line>
+    <ellipse cx="0" cy="0" rx="1.6" ry="2" fill="#aa7f55" transform="translate(10 120) rotate(-45)"></ellipse>
+    <ellipse cx="0" cy="0" rx=".6" ry=".75" fill="black" transform="translate(10 120) rotate(-45)"></ellipse>
+  </g>
+</svg>

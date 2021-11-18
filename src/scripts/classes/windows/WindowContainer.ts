@@ -10,6 +10,7 @@ import { GridType } from "../../enums/GridType.js";
 import { DimensionsDB } from "../db/DimensionsDB.js";
 import { GridTypeDB } from "../db/GridTypeDB.js";
 import { WindowGeneric } from "./WindowGeneric.js";
+import { FolderContentsDelta } from "../../types/FolderContentsDelta.js";
 
 export class WindowContainer extends WindowGeneric {
   static PREFIX = "_w_";
@@ -108,6 +109,27 @@ export class WindowContainer extends WindowGeneric {
 
   removeIcon(icon: Icon): void {
     this._contents[icon.id] = undefined;
+  }
+
+  async applyDelta(delta: FolderContentsDelta): Promise<void> {
+    if (delta.node != undefined) this.node = delta.node; //Actually don't needed, this is the same node. But just in case of future changes in function that creates delta.
+    if (delta.added != undefined) {
+      for (let icon of delta.added) {
+        this.addIcon(icon);
+        await icon.create(this);
+        this.grid.addCell(icon);
+      }
+    }
+    if (delta.removed != undefined) {
+      for (let id of delta.removed) {
+        let icon = this.getIcon(id);
+        if (icon != undefined) {
+          this.removeIcon(icon);
+          this.grid.removeCell(icon.x, icon.y);
+          icon.container = undefined;
+        }
+      }
+    }
   }
 
   open(): void {

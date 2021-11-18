@@ -49,6 +49,10 @@ export class WindowGeneric extends MovableObject implements IFocusable {
     });
   }
 
+  center(): void {
+    this.setPosition(window.innerWidth / 2 - this.element.offsetWidth / 2, window.innerHeight / 2 - this.element.offsetHeight / 2);
+  }
+
   open(): void {
     this.element.hidden = false;
     this.focus();

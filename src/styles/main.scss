@@ -24,6 +24,15 @@ $window-min-height: 2.3em;
   border-color: $color_border white white $color_border;
 }
 
+@mixin state_disabled {
+  &.disabled {
+    background: $color_window_background;
+    color: $color_border;
+    text-shadow: 0.08em 0.08em 0 white;
+    pointer-events: none;
+  }
+}
+
 .clearfix::after {
   content: "";
   clear: both;
@@ -77,6 +86,11 @@ a {
     margin: 1em;
   }
   
+  .divider {
+    @include border_inline(.075em);
+    margin: 0;
+    padding: 0;
+  }
 }
 
 .window-container {
@@ -117,6 +131,36 @@ a {
   }
 }
 
+.window-wizard {
+  width: 40em;
+  
+  .paged-content {
+    width: 23em;
+    float: right;
+  }
+
+  input[type="url"], input[type="text"] {
+    @include border_inline;
+    font-size: inherit;
+    width: calc(100% - 1em);
+    padding: .15em;
+
+    &:focus-visible {
+      outline: none;
+    }
+  }
+
+  .window-content {
+    .button {
+      float: right;
+      margin-right: 0;
+      margin-left: 0;
+    }
+    .button-cancel {
+      margin-left: 1em;
+    }
+  }
+}
 
 .window-head {
   background: linear-gradient(90deg, #000000, #a0a0a4);
@@ -144,12 +188,38 @@ a {
   margin: 0.2em;
 }
 
+.window-content {
+  .side-image {
+    float: left;
+    margin: 0 2em 1em 0;
+  }
+}
+
+.side-image {
+  @include border_inline;
+  width: 12.5em;
+}
+
 .button {
+  @include state_disabled;
   @include border_outline;
 
   background: $color_window_background;
   margin: 0.2em;
   color: #000;
+}
+
+.button-medium {
+  width: 7em;
+  text-align: center;
+  padding: .15em 0;
+  margin: 1em auto 0;
+}
+
+.button-auto {
+  width: fit-content;
+  padding: .15em 3em;
+  margin: 1em auto 0;
 }
 
 .button-close {
@@ -166,12 +236,6 @@ a {
     line-height: 1.2em;
     display: block;
   }
-}
-
-.button-ok {
-  width: fit-content;
-  padding: .15em 3em;
-  margin: 1em auto 0;
 }
 
 .icon {
@@ -275,6 +339,7 @@ a {
   }
 
   li {
+    @include state_disabled;
     padding: .15em 1.4em;
 
     .checked {
@@ -298,12 +363,6 @@ a {
     &:hover {
       background: $color_menu_selected;
       color: white;
-    }
-    &.disabled {
-      background: $color_window_background;
-      color: $color_border;
-      text-shadow: 0.08em 0.08em 0 white;
-      pointer-events: none;
     }
   }
 }

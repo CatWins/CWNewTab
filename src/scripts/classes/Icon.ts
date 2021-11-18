@@ -19,6 +19,7 @@ export class Icon extends MovableObject {
   html: string;
   icon: HTMLImageElement;
   nameElement: HTMLSpanElement;
+  container: Container;
 
   constructor(id: string, name: string, x: number, y: number, args: {url?: string, node?: any} = {"url": "#", "node": undefined}) {
     super(id, name, x, y);

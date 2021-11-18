@@ -1,5 +1,4 @@
 import { Target } from "../enums/Target.js";
-import { Container } from "../types/Container.js";
 import { PositionDB } from "./db/PositionDB.js";
 
 export class MovableObject {
@@ -19,7 +18,6 @@ export class MovableObject {
   element: HTMLDivElement;
   type: Target;
   draggable: HTMLElement;
-  container: Container;
 
   constructor(id: string, name: string, x: number, y: number) {
     this._id = id; this.name = name; this.x = x; this.y = y;
