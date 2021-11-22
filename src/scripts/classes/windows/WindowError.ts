@@ -1,5 +1,5 @@
 import { IconPath } from "../../enums/IconPath";
-import { Desktop as desktop } from "../DesktopSingle.js";
+import { desktop } from "../DesktopSingle.js";
 import { WindowGeneric } from "./WindowGeneric.js";
 
 let defaultArgs = {"error": undefined as Error, "message": "Something went wrong!"};
@@ -48,7 +48,7 @@ export class WindowError extends WindowGeneric {
   open(): void {}
 
   close(): void {
-    desktop.unregisterContainer(this);
+    desktop.unregisterWindow(this);
     this.element.remove();
   }
 }

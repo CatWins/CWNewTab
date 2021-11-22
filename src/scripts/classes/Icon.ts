@@ -1,5 +1,5 @@
 import { IconPath } from "../enums/IconPath.js";
-import { Desktop as desktop } from "./DesktopSingle.js";
+import { Desktop, desktop } from "./DesktopSingle.js";
 import { MovableObject } from "./MovableObject.js";
 import { WindowContainer } from "./windows/WindowContainer.js";
 import { Target } from "../enums/Target.js";
@@ -108,7 +108,7 @@ export class Icon extends MovableObject {
     this.element.getElementsByTagName("a")[0].focus();
   }
 
-  setContainer(container: Container): void {
+  setContainer(container: Desktop | WindowContainer): void {
     container.addIcon(this);
     this.container.removeIcon(this);
     this.container = container;
@@ -154,7 +154,7 @@ export class Icon extends MovableObject {
       //Detecting new container
       this.element.style.pointerEvents = "none";
       let destElement = document.elementFromPoint(e.clientX, e.clientY);
-      while (!destElement.classList.contains("window") && destElement.id != "desktop" && destElement != null) {
+      while (!destElement.classList.contains("window-container") && destElement.id != "desktop" && destElement != null) {
         destElement = destElement.parentElement;
       }
       if (destElement.id != this.container.id) {
@@ -162,7 +162,7 @@ export class Icon extends MovableObject {
         //Move to a new container
         this.container.grid.removeCell(this.x, this.y);
         let destContainer = desktop.getContainer(destElement.id);
-        this.setContainer(destContainer);
+        this.setContainer(destContainer as (Desktop | WindowContainer));  //casting types here because of how we get destElement ^^^ (it's html contains either class=window-container or id=desktop)
 
         //Setting coordinates in new container
         let xLocal = e.clientX - this.container.offsetX;

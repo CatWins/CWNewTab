@@ -9,48 +9,56 @@ import { Grid } from "./Grid.js";
 import { GridFree } from "./GridFree.js";
 import { GridTypeDB } from "./db/GridTypeDB.js";
 import { IFocusable } from "../interfaces/IFocusable.js";
-import { FolderContentsDelta } from "../types/FolderContentsDelta.js";
+import { WindowGeneric } from "./windows/WindowGeneric.js";
+import { ContainerMixin } from "./mixins/Container.js";
 
-const SYSTEM_FOLDERS_IDS = ["bookmarks"];
-const windows = {};
-const type = Target.DESKTOP;
-const id = "desktop";
-const nodeId: string = undefined;
-const order = [id];
-const element = document.getElementById(id) as HTMLDivElement;
-const content = element;
-const node: BookmarkTreeNode = undefined;
-const _contents = {};
-const contextMenu = ContextMenu.init();
-const _grid: Grid = undefined;
+export class Desktop extends ContainerMixin(class{}){
+  static SYSTEM_FOLDERS_IDS: string[] = ["bookmarks"];
+  static _instance: Desktop = undefined;
+  
+  windows: {[key: string]: WindowGeneric};
+  type: Target;
+  id: string;
+//  nodeId: string = undefined;
+  order: string[];
+  element: HTMLDivElement;
+  content: HTMLDivElement;
+  node: BookmarkTreeNode = undefined;
+  _contents: {[key: string]: Icon};
+  contextMenu: ContextMenu;
+  _grid: Grid = undefined;
 
-const offsetX = 0;
-const offsetY = 0;
-const zIndex = 0;
+  offsetX: number;
+  offsetY: number;
+  zIndex: number;
 
-export const Desktop = {
-  SYSTEM_FOLDERS_IDS,
-  windows,
-  type,
-  id,
-  nodeId,
-  order,
-  element,
-  content,
-  node,
-  _contents,
-  contextMenu,
-  _grid,
-
-  offsetX,
-  offsetY,
-  zIndex,
-
-  get grid(): Grid {return this._grid;},
+  get grid(): Grid {return this._grid;}
   set grid(grid: Grid) {
     GridTypeDB.save(this);
     this._grid = grid;
-  },
+  }
+
+  static get(): Desktop {
+    if (this._instance == undefined) {
+      this._instance = new Desktop("desktop");
+    }
+    return this._instance;
+  }
+
+  constructor(id: string) {
+    super();
+    this.windows = {};
+    this.type = Target.DESKTOP;
+    this.id = id;
+    this.order = [this.id];
+    this.element = document.getElementById(this.id) as HTMLDivElement;
+    this.content = this.element;
+    this._contents = {};
+    this.contextMenu = ContextMenu.init();
+    this.offsetX = 0;
+    this.offsetY = 0;
+    this.zIndex = 0;
+  }
 
   async create(): Promise<void> {
     //Creating Grid
@@ -62,7 +70,7 @@ export const Desktop = {
     this._grid = new GridFree(this, this.element.offsetWidth, this.element.offsetHeight, gridCellWidth, gridCellHeight);
     //Filling contents
     this.node = await Bookmarks.getRootNode();
-    let contents = await Bookmarks.getFolderContents(this.node);
+    let contents = await Bookmarks.getFolderContents(this.node.children);
     for (let icon of contents) {
       this.addIcon(icon);
       await icon.create(this);
@@ -78,7 +86,7 @@ export const Desktop = {
       if (iconElement == undefined) {
         ContextMenu.open(e.clientX, e.clientY, container);
       } else {
-        let icon = container.getIcon(iconElement.id);
+        let icon = (container as Container).getIcon(iconElement.id);
         ContextMenu.open(e.clientX, e.clientY, icon);
       }
     });
@@ -90,28 +98,12 @@ export const Desktop = {
     });
 
     this.element.addEventListener("mousedown", () => this.focus());
-  },
-
-  getIcon(id: string): Icon {
-    return this._contents[id];
-  },
-
-  addIcon(icon: Icon): void {
-    this._contents[icon.id] = icon;
-  },
-
-  removeIcon(icon: Icon): void {
-    this._contents[icon.id] = undefined;
-  },
-
-  applyDelta(delta: FolderContentsDelta): void {
-    //TODO: copy implementation from WindowContainer class
-  },
+  }
 
   getContainerFocused(): IFocusable {
     if (this.isFocused()) return this;
     return this.windows[this.order[this.order.length - 1]];
-  },
+  }
 
   setContainerFocused(container: IFocusable) {
     this.getContainerFocused().unfocus();
@@ -130,49 +122,51 @@ export const Desktop = {
           container.zIndex = this.order.indexOf(container.id);
         } else {
           if (!this.windows[container.id]) throw "Window not registered properly";
-          this.registerConteiner(container);
+          this.registerWindow(container as WindowGeneric); //casting types here because for now IFocusable is either Desktop or WindowGeneric and all this mismatch checks is about window, not desktop
         }
         this.setContainerFocused(container);
       }
     }
-  },
+  }
 
   isContainerFocused(id: string): boolean {
     return (this.order[this.order.length - 1] == id);
-  },
+  }
 
   isFocused(): boolean {
     return this.isContainerFocused(this.id);
-  },
+  }
 
   focus(): void {
     if (this.isFocused()) return;
     this.getContainerFocused().unfocus();
     this.order.push(this.id);
-  },
+  }
 
   unfocus(): void {
     if (this.isFocused() && this.order.length > 0) this.order.pop();
-  },
+  }
 
-  registerContainer(container: IFocusable): void {
-    if (this.windows[container.id] == undefined) {
+  registerWindow(w: WindowGeneric): void {
+    if (this.windows[w.id] == undefined) {
       if (this.order.length > 0) this.getContainerFocused().unfocus();
-      this.windows[container.id] = container;
-      this.order.push(container.id);
-      container.zIndex = this.order.length - 1;
+      this.windows[w.id] = w;
+      this.order.push(w.id);
+      w.zIndex = this.order.length - 1;
     }
-  },
+  }
 
-  unregisterContainer(container: IFocusable): void {
-    this.setContainerFocused(container);
+  unregisterWindow(w: WindowGeneric): void {
+    this.setContainerFocused(w);
     this.order.pop();
-    this.windows[container.id] = undefined;
-  },
+    this.windows[w.id] = undefined;
+  }
 
-  getContainer(id: string): Container {
+  getContainer(id: string): WindowGeneric | Desktop {
     if (id == this.id) return this;
     return this.windows[id];
   }
 
 }
+
+export const desktop = Desktop.get();

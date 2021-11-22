@@ -1,5 +1,5 @@
 var browser: any = chrome || browser;
-import {Desktop as desktop} from "./classes/DesktopSingle.js";
+import { desktop } from "./classes/DesktopSingle.js";
 import { EventEmitter } from "./classes/EventEmitter.js";
 import { CustomErrorEvent } from "./classes/events/CustomErrorEvent.js";
 import { WindowError } from "./classes/windows/WindowError.js";

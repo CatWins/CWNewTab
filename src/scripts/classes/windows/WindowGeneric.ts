@@ -1,6 +1,6 @@
 import { Target } from "../../enums/Target";
 import type { IFocusable } from "../../interfaces/IFocusable";
-import { Desktop as desktop } from "../DesktopSingle.js";
+import { desktop } from "../DesktopSingle.js";
 import { MovableObject } from "../MovableObject.js";
 
 export class WindowGeneric extends MovableObject implements IFocusable {
@@ -40,7 +40,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
       buttonClose.addEventListener("mousedown", (e) => {e.stopPropagation();});
       buttonClose.addEventListener("click", (e) => {this.close(); e.stopPropagation();});
     }
-    desktop.registerContainer(this);
+    desktop.registerWindow(this);
     this.focus();
 
     this.element.addEventListener("mousedown", (e) => {

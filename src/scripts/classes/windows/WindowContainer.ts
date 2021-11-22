@@ -1,4 +1,4 @@
-import { Desktop as desktop } from "../DesktopSingle.js";
+import { Desktop, desktop } from "../DesktopSingle.js";
 import { Bookmarks } from "../Bookmarks.js";
 import { IconPath } from "../../enums/IconPath.js";
 import { Grid } from "../Grid.js";
@@ -10,19 +10,19 @@ import { GridType } from "../../enums/GridType.js";
 import { DimensionsDB } from "../db/DimensionsDB.js";
 import { GridTypeDB } from "../db/GridTypeDB.js";
 import { WindowGeneric } from "./WindowGeneric.js";
-import { FolderContentsDelta } from "../../types/FolderContentsDelta.js";
+import { ContainerMixin } from "../mixins/Container.js";
 
-export class WindowContainer extends WindowGeneric {
+export class WindowContainer extends ContainerMixin(WindowGeneric) {
   static PREFIX = "_w_";
   static resizeObserver = new ResizeObserver(resizeObserverCallback);
   
   content: HTMLDivElement;
+  node: BookmarkTreeNode;
+  _contents: {[key: string]: Icon};
   filler: HTMLDivElement;
   _grid: Grid;
-  node: BookmarkTreeNode;
   width: number;
   height: number;
-  _contents: {[key: string]: Icon};
 
   constructor(id: string, name: string, x: number, y: number, args: {node?: any} = {"node": undefined}) {
     super(id, name, x, y);
@@ -47,6 +47,7 @@ export class WindowContainer extends WindowGeneric {
       '</div>';
   }
 
+  //@ts-ignore due to compiler bug: https://github.com/microsoft/TypeScript/issues/44938
   get id(): string {return WindowContainer.PREFIX + this._id;}
   get offsetX(): number {return this.element.offsetLeft + this.element.clientLeft + this.content.offsetLeft + this.content.clientLeft - this.content.scrollLeft;}
   get offsetY(): number {return this.element.offsetTop + this.element.clientTop + this.content.offsetTop + this.content.clientTop - this.content.scrollTop;}
@@ -59,14 +60,14 @@ export class WindowContainer extends WindowGeneric {
   async create() {
     await super.create();
     let contents: Icon[] = [];
-    if (desktop.SYSTEM_FOLDERS_IDS.includes(this.id)) {
+    if (Desktop.SYSTEM_FOLDERS_IDS.includes(this.id)) {
       console.log("Windows with custom functionality not supported");
     } else {
       if (this.node != undefined) {
         contents = await Bookmarks.getFolderContents(this.node.children);
       } else {
         console.log("Custom windows not implemented");
-        console.log(desktop.SYSTEM_FOLDERS_IDS, this.id);
+        console.log(Desktop.SYSTEM_FOLDERS_IDS, this.id);
         return;
       }
     }
@@ -97,39 +98,6 @@ export class WindowContainer extends WindowGeneric {
     this.content.addEventListener("scroll", (_: Event) => {
       this.resizeContent();
     });
-  }
-
-  getIcon(id: string): Icon {
-    return this._contents[id];
-  }
-
-  addIcon(icon: Icon): void {
-    this._contents[icon.id] = icon;
-  }
-
-  removeIcon(icon: Icon): void {
-    this._contents[icon.id] = undefined;
-  }
-
-  async applyDelta(delta: FolderContentsDelta): Promise<void> {
-    if (delta.node != undefined) this.node = delta.node; //Actually don't needed, this is the same node. But just in case of future changes in function that creates delta.
-    if (delta.added != undefined) {
-      for (let icon of delta.added) {
-        this.addIcon(icon);
-        await icon.create(this);
-        this.grid.addCell(icon);
-      }
-    }
-    if (delta.removed != undefined) {
-      for (let id of delta.removed) {
-        let icon = this.getIcon(id);
-        if (icon != undefined) {
-          this.removeIcon(icon);
-          this.grid.removeCell(icon.x, icon.y);
-          icon.container = undefined;
-        }
-      }
-    }
   }
 
   open(): void {

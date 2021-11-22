@@ -6,14 +6,9 @@ import { FolderContentsDelta } from "../types/FolderContentsDelta";
 var browser: any = browser || chrome;
 
 export class Bookmarks {
-  static async getRootContents(): Promise<Icon[]> {
-    let nodes = await Bookmarks.getRootNode();
-    return Bookmarks.getFolderContents(nodes);
-  }
-
-  static async getRootNode(): Promise<BookmarkTreeNode[]> {
+  static async getRootNode(): Promise<BookmarkTreeNode> {
     let tree = await browser.bookmarks.getTree();
-    return tree[0].children;
+    return tree[0];
   }
 
   static async getFolderContents(nodes: BookmarkTreeNode[]): Promise<Icon[]> {

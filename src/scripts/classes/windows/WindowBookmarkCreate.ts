@@ -1,6 +1,6 @@
 import { WindowGeneric } from "./WindowGeneric.js";
 import { ImagePath } from "../../enums/ImagePath";
-import { Desktop as desktop } from "../DesktopSingle.js";
+import { desktop } from "../DesktopSingle.js";
 import { getRandomId } from "../../Utility.js";
 import { Container } from "../../types/Container.js";
 import { Bookmarks } from "../Bookmarks.js";
@@ -143,7 +143,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
   open(): void {}
 
   close(): void {
-    desktop.unregisterContainer(this);
+    desktop.unregisterWindow(this);
     this.element.remove();
   }
 }
