@@ -12,7 +12,7 @@ export class Bookmarks {
   }
 
   static async getFolderContents(nodes: BookmarkTreeNode[]): Promise<Icon[]> {
-    let res = [];
+    let res: Icon[] = [];
     for (let node of nodes) {
       let is_folder = (!node.url);
       if (is_folder) {
@@ -43,10 +43,10 @@ export class Bookmarks {
 
   static async getFolderContentsDelta(folderNode: BookmarkTreeNode): Promise<FolderContentsDelta> {
     try {
-      let newContents = await browser.bookmarks.getChildren(folderNode.id) as BookmarkTreeNode[];
-      let addedNodes = newContents.filter(e => folderNode.children.findIndex(other => e.id == other.id) == -1);
-      let removedNodes = folderNode.children.filter(e => newContents.findIndex(other => e.id == other.id) == -1);
-      folderNode.children = newContents;
+      let newContents = (await browser.bookmarks.getSubTree(folderNode.id))[0] as BookmarkTreeNode;
+      let addedNodes = newContents.children.filter(e => folderNode.children.findIndex(other => e.id == other.id) == -1);
+      let removedNodes = folderNode.children.filter(e => newContents.children.findIndex(other => e.id == other.id) == -1);
+      folderNode = newContents;
       return {
         node: folderNode,
         added: await this.getFolderContents(addedNodes),

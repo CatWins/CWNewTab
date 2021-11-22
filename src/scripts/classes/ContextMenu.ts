@@ -10,6 +10,7 @@ import { GridSnap } from "./GridSnap.js";
 import { GridStrict } from "./GridStrict.js";
 import { GridFree } from "./GridFree.js";
 import { WindowBookmarkCreate } from "./windows/WindowBookmarkCreate.js";
+import { Bookmarks } from "./Bookmarks.js";
 
 export class ContextMenu {
   static _menu: (MenuItem | MenuItemDivider)[];
@@ -39,6 +40,18 @@ export class ContextMenu {
     itemCreateBookmark.addEventListener("click", (e: MouseEvent) => {
       let w = new WindowBookmarkCreate(0, 0, itemCreateBookmark.currentTarget as Container, e.clientX, e.clientY);
       w.create().then(() => w.center());
+    });
+
+    //Add Folder
+    itemCreateFolder.addEventListener("click", (e: MouseEvent) => {
+      let container = itemCreateFolder.currentTarget as Container;
+      Bookmarks.createFolder(container.node, "New Folder").then(
+        () => Bookmarks.getFolderContentsDelta(container.node).then(
+        delta => {
+          container.applyDelta(delta);
+          delta.added[0].userRename();
+        }
+      ));
     });
 
     //Remove Bookmark
