@@ -7,6 +7,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
   static PREFIX = "_wgeneric_";
   
   head: HTMLDivElement;
+  headTitle: HTMLSpanElement;
   _zIndex: number;
 
   protected html: string;
@@ -16,6 +17,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
     this.type = Target.DEFAULT;
     this.element = undefined;
     this.head = undefined;
+    this.headTitle = undefined;
     this.draggable = undefined;
     this._zIndex = 0;
   }
@@ -31,6 +33,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
     desktop.content.insertAdjacentHTML('beforeend', this.html);
     this.element = document.getElementById(this.id) as HTMLDivElement;
     this.head = this.element.getElementsByClassName("window-head")[0] as HTMLDivElement;
+    this.headTitle = this.head.getElementsByTagName("span")[0] as HTMLSpanElement;
     this.draggable = this.head;
     this.element.style.left = this.x + "px";
     this.element.style.top = this.y + "px";

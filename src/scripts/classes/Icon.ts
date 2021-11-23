@@ -8,6 +8,7 @@ import { BookmarkTreeNode } from "../types/chrome.js";
 import { GridType } from "../enums/GridType.js";
 import { Grid } from "./Grid.js";
 import { PositionDB } from "./db/PositionDB.js";
+import { Bookmarks } from "./Bookmarks.js";
 
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
@@ -98,6 +99,19 @@ export class Icon extends MovableObject {
       this.focus();
       document.removeEventListener("mousedown", mouseCallback, true);
       document.removeEventListener("keydown", keyboardCallback, true);
+      Bookmarks.renameNode(this.node, this.name).then(
+        (/*resolve*/) => {
+          this.name = this.nameElement.innerText;
+          if (this.node != undefined) {
+            let container = desktop.getContainer(WindowContainer.PREFIX + this._id) as WindowContainer;
+            if (container != undefined) {
+              container.name = this.name;
+              container.headTitle.innerText = this.name;
+            }
+          }
+        },
+        (/*reject*/) => {this.nameElement.innerText = oldName;}
+      );
     }).bind(this);
 
     document.addEventListener("mousedown", mouseCallback, true);

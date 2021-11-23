@@ -87,4 +87,20 @@ export class Bookmarks {
       return Promise.reject(error);
     }
   }
+
+  static async updateNode(node: BookmarkTreeNode, title: string = null, url: string = null): Promise<BookmarkTreeNode> {
+    let changes: {title?: string, url?: string} = {};
+    changes.title = title || undefined;
+    changes.url = url || undefined;
+    try {
+      return await browser.bookmarks.update(node.id, changes);
+    } catch (error) {
+      EventEmitter.dispatchErrorEvent(error);
+      return Promise.reject(error);
+    }
+  }
+
+  static async renameNode(node: BookmarkTreeNode, title: string): Promise<BookmarkTreeNode> {
+    return await this.updateNode(node, title);
+  }
 }

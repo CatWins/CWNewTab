@@ -13,7 +13,7 @@ import { WindowGeneric } from "./WindowGeneric.js";
 import { ContainerMixin } from "../mixins/Container.js";
 
 export class WindowContainer extends ContainerMixin(WindowGeneric) {
-  static PREFIX = "_w_";
+  static PREFIX = "_wcontainer_";
   static resizeObserver = new ResizeObserver(resizeObserverCallback);
   
   content: HTMLDivElement;
