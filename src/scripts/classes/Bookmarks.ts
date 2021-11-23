@@ -78,4 +78,13 @@ export class Bookmarks {
   static async createFolder(parent: BookmarkTreeNode, title: string): Promise<BookmarkTreeNode> {
     return await this.createNode(parent, title);
   }
+
+  static async removeNode(node: BookmarkTreeNode): Promise<void> {
+    try {
+      return await browser.bookmarks.remove(node.id);
+    } catch (error) {
+      EventEmitter.dispatchErrorEvent(error);
+      return Promise.reject(error);
+    }
+  }
 }

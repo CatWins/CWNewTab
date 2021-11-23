@@ -57,11 +57,13 @@ export class ContextMenu {
     //Remove Bookmark
     itemRemove.addEventListener("click", (e: MouseEvent) => {
       let icon = itemRemove.currentTarget as Icon;
-      icon.element.remove();
-      if (icon.container.grid != undefined) {
-        icon.container.grid.removeCell(icon.x, icon.y);
-      }
-      icon.container.removeIcon(icon);
+      Bookmarks.removeNode(icon.node).then(
+        () => Bookmarks.getFolderContentsDelta(icon.container.node).then(
+        delta => {
+          icon.container.applyDelta(delta);
+          icon.element.remove();
+        }
+      ));
     });
 
     //Rename Bookmark
