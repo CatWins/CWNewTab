@@ -9,6 +9,7 @@ import { GridType } from "../enums/GridType.js";
 import { Grid } from "./Grid.js";
 import { PositionDB } from "./db/PositionDB.js";
 import { Bookmarks } from "./Bookmarks.js";
+import { EventEmitter } from "./EventEmitter.js";
 
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
@@ -128,6 +129,16 @@ export class Icon extends MovableObject {
     this.container = container;
   }
 
+  async isContainerValid(container: Container): Promise<boolean> {
+    let node = await Bookmarks.getNode(container.node.id);
+    if (node.id == this.node.id) return false;
+    while (node.parentId != undefined) {
+      if (node.parentId == this.node.id) return false;
+      node = await Bookmarks.getNode(node.parentId);
+    }
+    return true;
+  }
+
   dragMove(e: MouseEvent): void {
     let ref = Icon.getReference();
     if (MovableObject.is_dragged) {
@@ -172,34 +183,42 @@ export class Icon extends MovableObject {
         destElement = destElement.parentElement;
       }
       if (destElement.id != this.container.id) {
-        
         //Move to a new container
-        this.container.grid.removeCell(this.x, this.y);
-        let destContainer = desktop.getContainer(destElement.id);
-        this.setContainer(destContainer as (Desktop | WindowContainer));  //casting types here because of how we get destElement ^^^ (it's html contains either class=window-container or id=desktop)
+        let destContainer = desktop.getContainer(destElement.id) as (Desktop | WindowContainer);  //casting types here because of how we get destElement ^^^ (it's html contains either class=window-container or id=desktop)
+        this.isContainerValid(destContainer).then(
+          (isValid) => {
+            if (isValid) {
+              Bookmarks.moveNode(this.node, 0, destContainer.node).then(
+                () => {
+                  this.container.refreshNode();
+                  destContainer.refreshNode();
+                  this.container.grid.removeCell(this.x, this.y);
+                  this.setContainer(destContainer);
+                  //Setting coordinates in new container
+                  let xLocal = e.clientX - this.container.offsetX;
+                  let yLocal = e.clientY - this.container.offsetY;
+                  
+                  if (this.container.grid.type == GridType.FREE) {
+                    //FREE GridType
+                    let x = xLocal - MovableObject.clickedOffsetX;
+                    let y = yLocal - MovableObject.clickedOffsetY;
+                    this.setPosition(x, y);
+                    this.container.grid.addCell(this);
+                  } else {
+                    //STRICT or SNAP GridType
+                    this.container.grid.addCellByCoords(this, xLocal, yLocal);
+                  }
 
-        //Setting coordinates in new container
-        let xLocal = e.clientX - this.container.offsetX;
-        let yLocal = e.clientY - this.container.offsetY;
-        
-        if (this.container.grid.type == GridType.FREE) {
-          
-          //FREE GridType
-          let x = xLocal - MovableObject.clickedOffsetX;
-          let y = yLocal - MovableObject.clickedOffsetY;
-          this.setPosition(x, y);
-          this.container.grid.addCell(this);
-          Grid.hideHint();
-        } else {
-
-          //STRICT or SNAP GridType
-          this.container.grid.addCellByCoords(this, xLocal, yLocal);
-          Grid.hideHint();
-        }
-
-        this.container.content.appendChild(this.element);
+                  this.container.content.appendChild(this.element);
+                }
+              );
+            } else {
+              EventEmitter.dispatchErrorEvent(new Error("Can't move folder inside itself"));
+            }
+          }
+        );
+        Grid.hideHint();
       } else {
-
         //Move inside the same grid
         if (this.container.grid.type == GridType.FREE) {
           this.setPosition(refX - this.container.offsetX, refY - this.container.offsetY);

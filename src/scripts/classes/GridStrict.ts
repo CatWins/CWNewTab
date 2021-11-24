@@ -7,6 +7,7 @@ export class GridStrict extends Grid {
     let gridStrict = new GridStrict(grid.container, grid.width, grid.height, grid.cellWidth, grid.cellHeight);
     gridStrict._grid = grid.grid;
     gridStrict._grid = gridStrict._grid.filter(e => e != undefined);
+    gridStrict.sort();
     gridStrict.recalc(0);
     return gridStrict;
   }

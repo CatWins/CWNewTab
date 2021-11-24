@@ -80,17 +80,26 @@ export class Grid {
     return this._grid[y * this._gridHeight + x];
   }
 
+  /**
+   * Add a new cell to the end of the grid.
+   */
   addCell(obj: Icon): void {
     this._grid.push(obj);
     this.recalc(this._grid.length - 1);
   }
 
+  /**
+   * Add a new cell to the specified coordinates of the grid.
+   */
   addCellByCoords(obj: Icon, x: number, y: number): void {
     let n = Math.min(this._grid.length, this.getGridIndexFromLocalCoordinates(x, y));
     this._grid.splice(n, 0, obj);
     this.recalc(n);
   }
 
+  /**
+   * Move a cell with specified object to a new coordinates within the same grid.
+   */
   moveCell(obj: Icon, x: number, y: number): void {
     let from = this.getGridIndexFromLocalCoordinates(obj.x, obj.y);
     let to = this.getGridIndexFromLocalCoordinates(x, y);
@@ -103,6 +112,9 @@ export class Grid {
     }
   }
   
+  /**
+   * Remove a cell that lies at specified coordinates.
+   */
   removeCell(x: number, y: number): void {
     let n = this.getGridIndexFromLocalCoordinates(x, y);
     this._grid.splice(n, 1);
@@ -130,5 +142,13 @@ export class Grid {
       let y = (i - (i % this._gridWidth)) / this._gridWidth * this.cellHeight;
       this._grid[i].setPosition(x, y);
     }
+  }
+
+  sort(): void {
+    this._grid.sort((a: Icon, b: Icon): number => {
+      let aIndex = this.getGridIndexFromLocalCoordinates(a.x, a.y);
+      let bIndex = this.getGridIndexFromLocalCoordinates(b.x, b.y);
+      return aIndex - bIndex;
+    });
   }
 }

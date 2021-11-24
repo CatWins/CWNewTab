@@ -1,8 +1,9 @@
 import { Target } from "../../enums/Target";
 import { BookmarkTreeNode } from "../../types/chrome";
 import { FolderContentsDelta } from "../../types/FolderContentsDelta";
-import { Grid } from "../Grid";
-import { Icon } from "../Icon";
+import { Bookmarks } from "../Bookmarks.js";
+import { Grid } from "../Grid.js";
+import { Icon } from "../Icon.js";
 
 type Constructor = new (...args: any[]) => {};
 //type ConstructorGeneric<T = {}> = new (...args: any[]) => T;
@@ -52,6 +53,11 @@ export function ContainerMixin<BaseClass extends Constructor>(BaseClass: BaseCla
           }
         }
       }
+    }
+
+    async refreshNode(): Promise<void> {
+      let node = await Bookmarks.getNode(this.node.id);
+      if (node != undefined) {this.node = node;}
     }
   }
   return MContainer;

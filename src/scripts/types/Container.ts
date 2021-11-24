@@ -19,4 +19,5 @@ export type Container = {
   addIcon: (icon: Icon) => void,
   removeIcon: (icon: Icon) => void,
   applyDelta: (delta: FolderContentsDelta) => void,
+  refreshNode: () => void,
 }
