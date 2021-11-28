@@ -11,6 +11,7 @@ import { GridTypeDB } from "./db/GridTypeDB.js";
 import { IFocusable } from "../interfaces/IFocusable.js";
 import { WindowGeneric } from "./windows/WindowGeneric.js";
 import { ContainerMixin } from "./mixins/Container.js";
+import { DisplayPropertiesDB } from "./db/DisplayPropertiesDB.js";
 
 export class Desktop extends ContainerMixin(class{}){
   static SYSTEM_FOLDERS_IDS: string[] = ["bookmarks"];
@@ -52,6 +53,7 @@ export class Desktop extends ContainerMixin(class{}){
     this.id = id;
     this.order = [this.id];
     this.element = document.getElementById(this.id) as HTMLDivElement;
+    DisplayPropertiesDB.load(this);
     this.content = this.element;
     this._contents = {};
     this.contextMenu = ContextMenu.init();
@@ -76,7 +78,7 @@ export class Desktop extends ContainerMixin(class{}){
       await icon.create(this);
       this.grid.addCell(icon);
     }
-    GridTypeDB.load(this);
+    await GridTypeDB.load(this);
 
     this.element.addEventListener("contextmenu", (e: MouseEvent) => {
       e.preventDefault();
@@ -167,6 +169,21 @@ export class Desktop extends ContainerMixin(class{}){
     return this.windows[id];
   }
 
+  setBackgroundColor(color: string): void {
+    this.element.style.backgroundColor = color;
+  }
+
+  resetBackgroundColor(): void {
+    this.setBackgroundColor(null);
+  }
+
+  setBackgroundImage(imagePath: string): void {
+    this.element.style.backgroundImage = "url(" + imagePath + ")";
+  }
+
+  resetBackgroundImage(): void {
+    this.setBackgroundImage(null);
+  }
 }
 
 export const desktop = Desktop.get();

@@ -9,3 +9,8 @@ export function getIconElementFromEventPath(event: any): HTMLDivElement {
 export function getRandomId(): string {
   return (Math.random() * 10e16).toString();
 }
+
+export function rgbToHex(rgbString: string) {
+  let [r, g, b] = rgbString.trim().slice(4, -1).split(",").map((e) => parseInt(e));
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}

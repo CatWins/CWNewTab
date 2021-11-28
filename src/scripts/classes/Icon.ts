@@ -46,6 +46,7 @@ export class Icon extends MovableObject {
   get id(): string {return Icon.PREFIX + this._id;}
 
   async create(container: Container = desktop): Promise<void> {
+    await super.create();
     this.container = container;
     container.content.insertAdjacentHTML('beforeend', this.html);
     this.element = document.getElementById(this.id) as HTMLDivElement;

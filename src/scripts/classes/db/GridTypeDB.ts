@@ -14,11 +14,11 @@ export class GridTypeDB extends GenericDataDB {
   static tag = "_grid-type";
   static data: GridType = GridType.FREE;
 
-  static getData(obj: IGrid): GridType {
+  static async getData(obj: IGrid): Promise<GridType> {
     return obj.grid.type;
   }
 
-  static setData(obj: IGrid, data: GridType): void {
+  static async setData(obj: IGrid, data: GridType): Promise<void> {
     if (obj.grid.type != data) {
       switch (data) {
         case GridType.FREE:
@@ -35,6 +35,6 @@ export class GridTypeDB extends GenericDataDB {
   }
 
   //overriding typescript parameter types
-  static save(obj: IGrid): void {super.save(obj);}
-  static load(obj: IGrid): void {super.load(obj);}
+  static async save(obj: IGrid): Promise<void> {await super.save(obj);}
+  static async load(obj: IGrid): Promise<void> {await super.load(obj);}
 }

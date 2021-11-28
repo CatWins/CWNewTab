@@ -14,19 +14,19 @@ export class DimensionsDB extends GenericDataDB {
     "height": window.innerHeight /2
   };
 
-  static getData(obj: IDimensions): Dimensions {
+  static async getData(obj: IDimensions): Promise<Dimensions> {
     return {
       "width": obj.width,
       "height": obj.height
     };
   }
 
-  static setData(obj: IDimensions, data: Dimensions): void {
+  static async setData(obj: IDimensions, data: Dimensions): Promise<void> {
     obj.width = data.width;
     obj.height = data.height;
   }
 
   //overriding typescript parameter types
-  static save(obj: IDimensions): void {super.save(obj);}
-  static load(obj: IDimensions): void {super.load(obj);}
+  static async save(obj: IDimensions): Promise<void> {await super.save(obj);}
+  static async load(obj: IDimensions): Promise<void> {await super.load(obj);}
 }

@@ -4,8 +4,8 @@ export class GenericDataDB {
   static tag: string;
   static data: any;
 
-  static getData(obj: any): any {};
-  static setData(obj: any, data: any): any {};
+  static async getData(obj: any): Promise<any> {};
+  static async setData(obj: any, data: any): Promise<any> {};
 
   static isValid(data: any): boolean {
     if (data == undefined) return false;
@@ -13,7 +13,7 @@ export class GenericDataDB {
       if (typeof data == "object") {
         for (const key in this.data) {
           if (typeof this.data[key] != typeof data[key]) {
-            throw `Error\nType mismatch: ${typeof this.data[key]} != ${typeof data[key]}`;
+            throw new Error(`Error\nType mismatch: ${typeof this.data[key]} != ${typeof data[key]} at key ${key}`);
           } else {
             if (typeof this.data[key] == "number" && !isFinite(data[key])) {
               throw new Error(`Error\n${key} = ${data[key]} is not a number`);
@@ -36,17 +36,21 @@ export class GenericDataDB {
     return true;
   }
 
-  static save(obj: any): void {
-    let data = this.getData(obj);
-    if (!this.isValid(data)) return;
-    window.localStorage.setItem(obj.id + this.tag, JSON.stringify(data));
+  static async save(obj: any): Promise<void> {
+    try {
+      let data = await this.getData(obj);
+      if (!this.isValid(data)) return;
+      window.localStorage.setItem(obj.id + this.tag, JSON.stringify(data));
+    } catch (error) {
+      EventEmitter.dispatchErrorEvent(error);
+    }
   }
 
-  static load(obj: any, fallback: any = undefined): void {
+  static async load(obj: any, fallback: any = undefined): Promise<void> {
     try {
       let data = JSON.parse(window.localStorage.getItem(obj.id + this.tag));
       if (!this.isValid(data)) data = fallback || this.data;
-      this.setData(obj, data);
+      await this.setData(obj, data);
     } catch (error) {
       EventEmitter.dispatchErrorEvent(error);
     }

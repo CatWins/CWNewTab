@@ -13,4 +13,6 @@ EventEmitter.addEventListener(EventType.CUSTOM_ERROR_EVENT, (e: CustomErrorEvent
 
 await desktop.create();
 
-document.addEventListener("click", (e) => {e.preventDefault();})
+document.addEventListener("click", (e) => {
+  if (!["input", "label"].includes((e.target as Element).tagName.toLowerCase())) e.preventDefault();
+});

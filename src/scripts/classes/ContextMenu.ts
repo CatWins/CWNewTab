@@ -11,6 +11,7 @@ import { GridStrict } from "./GridStrict.js";
 import { GridFree } from "./GridFree.js";
 import { WindowBookmarkCreate } from "./windows/WindowBookmarkCreate.js";
 import { Bookmarks } from "./Bookmarks.js";
+import { WindowDisplayProperties } from "./windows/WindowDisplayProperties.js";
 
 export class ContextMenu {
   static _menu: (MenuItem | MenuItemDivider)[];
@@ -34,7 +35,8 @@ export class ContextMenu {
                               this.addItem(new MenuItemDivider());
     let itemRemove =          this.addItem(new MenuItem("Remove", [Target.ICON]));
     let itemRename =          this.addItem(new MenuItem("Rename", [Target.ICON]));
-    let itemChangeIcon =      this.addItem(new MenuItem("Change Icon", [Target.ICON]));
+                              this.addItem(new MenuItemDivider());
+    let itemDisplayProps =    this.addItem(new MenuItem("Properties", [Target.DESKTOP]));
     
     //Add Bookmark
     itemCreateBookmark.addEventListener("click", (e: MouseEvent) => {
@@ -116,6 +118,10 @@ export class ContextMenu {
       let container = itemGridLineup.currentTarget as Container;
       container.grid = GridSnap.from(container.grid);  //Grid will recalc icon positions on type change
       container.grid = GridFree.from(container.grid);
+    });
+
+    itemDisplayProps.addEventListener("click", () => {
+      WindowDisplayProperties.get().open();
     });
 
     return ContextMenu;

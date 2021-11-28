@@ -45,7 +45,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
                   '<br>' +
                   'Website url:' +
                 '</div>' +
-                '<input class="bookmark-url" type="url"></input>' +
+                '<input class="input-text bookmark-url" type="url"></input>' +
               '</div>' +
               '<div class="paged-content-page">' +
                 '<div class="paged-content-description">' +
@@ -54,7 +54,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
                   '<br>' +
                   'Bookmark name:' +
                 '</div>' +
-                '<input class="bookmark-name" type="text"></input>' +
+                '<input class="input-text bookmark-name" type="text"></input>' +
               '</div>' +
 
             '</div>' +

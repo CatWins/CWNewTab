@@ -59,9 +59,10 @@ a {
 }
 
 #desktop {
-  background: #018281;
+  background: #008080;
   height: 100vh;
   position: relative;
+  transition: background-color 0.5s;
 }
 
 #drag-hint {
@@ -139,17 +140,6 @@ a {
     float: right;
   }
 
-  input[type="url"], input[type="text"] {
-    @include border_inline;
-    font-size: inherit;
-    width: calc(100% - 1em);
-    padding: .15em;
-
-    &:focus-visible {
-      outline: none;
-    }
-  }
-
   .window-content {
     .button {
       float: right;
@@ -192,6 +182,103 @@ a {
   .side-image {
     float: left;
     margin: 0 2em 1em 0;
+  }
+}
+
+.window-desktop-properties {
+  .content-outline-inner {
+    >.input-radio {
+      display: inline-block;
+      width: 6em;
+    }
+    >.input-button {
+      display: inline-block;
+      >.button {
+        display: block;
+        width: 6em;
+        text-align: center;
+      }
+    }
+  }
+  .footer {
+    .button {
+      float: right;
+      margin-left: 0.6em;
+    }
+  }
+}
+
+.content-outline {
+  @include border_inline(math.div($window-border-width, 2));
+  margin: .8em;
+  position: relative;
+  >.content-outline-inner {
+    @include border_outline(math.div($window-border-width, 2));
+    padding: 1em;
+    .content-outline-title {
+      position: absolute;
+      top: -0.7em;
+      left: 0.5em;
+      background: $color_window_background;
+      padding: 0 .2em 0 .2em;
+    }
+  }
+}
+
+.input-button {
+  position: relative;
+  >.hidden-input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 0;
+    padding: .15em 0;
+    margin: 0;
+    border: 0;
+  }
+  .button {
+    margin: 0;
+    padding: 0.15em 0.3em;
+  }
+}
+
+.input-radio {
+  >.hidden-input {
+    width: 0;
+    padding: .15em 0;
+    margin: 0;
+    border: 0;
+    float: left;
+
+    &:checked + .radio-button::before {
+      background: radial-gradient(black 0%, black 35%, white 40%);
+    }
+  }
+  .radio-button {
+    margin: 0;
+    padding: 0.15em 0.3em;
+    &::before {
+      @include border_inline;
+      width: 0.6em;
+      height: 0.6em;
+      border-radius: 100%;
+      content: '';
+      display: inline-block;
+      background: white;
+      margin: 0 .3em 0 0;
+    }
+  }
+}
+
+.input-text {
+  @include border_inline;
+  font-size: inherit;
+  width: calc(100% - 1em);
+  padding: .15em;
+
+  &:focus-visible {
+    outline: none;
   }
 }
 

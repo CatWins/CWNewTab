@@ -76,7 +76,7 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
     this.filler = this.content.getElementsByClassName("window-filler")[0] as HTMLDivElement;
     this.width = this.content.offsetWidth;
     this.height = this.content.offsetHeight;
-    DimensionsDB.load(this);
+    await DimensionsDB.load(this);
     this.element.style.width = this.width + "px";
     this.element.style.height = this.height + "px";
     let gridCellReference = Icon.getReference();
@@ -90,7 +90,7 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
       await icon.create(this);
       this.grid.addCell(icon);
     }
-    GridTypeDB.load(this);
+    await GridTypeDB.load(this);
     this.filler.style.width = this.content.scrollWidth + "px";
     this.filler.style.height = this.content.scrollHeight + "px";
     WindowContainer.resizeObserver.observe(this.element);

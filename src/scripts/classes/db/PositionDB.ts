@@ -14,19 +14,19 @@ export class PositionDB extends GenericDataDB {
     "y": 40
   };
 
-  static getData(obj: IPosition): Position {
+  static async getData(obj: IPosition): Promise<Position> {
     return {
       "x": obj.x,
       "y": obj.y
     };
   }
 
-  static setData(obj: IPosition, data: Position): void {
+  static async setData(obj: IPosition, data: Position): Promise<void> {
     obj.x = data.x;
     obj.y = data.y;
   }
 
   //overriding typescript parameter types
-  static save(obj: IPosition): void {super.save(obj);}
-  static load(obj: IPosition, fallback?: Position): void {super.load(obj, fallback);}
+  static async save(obj: IPosition): Promise<void> {await super.save(obj);}
+  static async load(obj: IPosition, fallback?: Position): Promise<void> { await super.load(obj, fallback);}
 }

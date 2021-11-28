@@ -30,6 +30,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
   }
 
   async create() {
+    await super.create();
     desktop.content.insertAdjacentHTML('beforeend', this.html);
     this.element = document.getElementById(this.id) as HTMLDivElement;
     this.head = this.element.getElementsByClassName("window-head")[0] as HTMLDivElement;
