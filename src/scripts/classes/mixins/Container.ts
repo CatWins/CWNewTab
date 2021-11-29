@@ -2,6 +2,7 @@ import { Target } from "../../enums/Target";
 import { BookmarkTreeNode } from "../../types/chrome";
 import { FolderContentsDelta } from "../../types/FolderContentsDelta";
 import { Bookmarks } from "../Bookmarks.js";
+import { LockedStateDB } from "../db/LockedStateDB.js";
 import { Grid } from "../Grid.js";
 import { Icon } from "../Icon.js";
 
@@ -21,6 +22,7 @@ export function ContainerMixin<BaseClass extends Constructor>(BaseClass: BaseCla
     abstract grid: Grid;
     abstract node: BookmarkTreeNode;
     abstract _contents: {[key: string]: Icon};
+    abstract isLocked: boolean;
 
     getIcon(id: string): Icon {
       return this._contents[id];
@@ -58,6 +60,11 @@ export function ContainerMixin<BaseClass extends Constructor>(BaseClass: BaseCla
     async refreshNode(): Promise<void> {
       let node = await Bookmarks.getNode(this.node.id);
       if (node != undefined) {this.node = node;}
+    }
+
+    toggleLock(): void {
+      this.isLocked = !this.isLocked;
+      LockedStateDB.save(this);
     }
   }
   return MContainer;

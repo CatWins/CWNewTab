@@ -11,6 +11,7 @@ export type Container = {
   grid: Grid,
   node: BookmarkTreeNode,
   _contents: {[key: string]: Icon};
+  isLocked: boolean;
   
   offsetX: number,
   offsetY: number,

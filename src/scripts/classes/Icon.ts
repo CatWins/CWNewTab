@@ -141,6 +141,7 @@ export class Icon extends MovableObject {
   }
 
   dragMove(e: MouseEvent): void {
+    if (this.container.isLocked) return;
     let ref = Icon.getReference();
     if (MovableObject.is_dragged) {
       if (e.clientX > 0 && e.clientX < window.innerWidth) {
@@ -171,6 +172,7 @@ export class Icon extends MovableObject {
   }
 
   dragStop(e: MouseEvent): void {
+    if (this.container.isLocked) return;
     if (MovableObject.is_dragged) {
       let ref = Icon.getReference();
       let refX = ref.element.offsetLeft;

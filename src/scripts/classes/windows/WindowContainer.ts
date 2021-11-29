@@ -11,6 +11,7 @@ import { DimensionsDB } from "../db/DimensionsDB.js";
 import { GridTypeDB } from "../db/GridTypeDB.js";
 import { WindowGeneric } from "./WindowGeneric.js";
 import { ContainerMixin } from "../mixins/Container.js";
+import { LockedStateDB } from "../db/LockedStateDB.js";
 
 export class WindowContainer extends ContainerMixin(WindowGeneric) {
   static PREFIX = "_wcontainer_";
@@ -23,6 +24,7 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
   _grid: Grid;
   width: number;
   height: number;
+  isLocked: boolean;
 
   constructor(id: string, name: string, x: number, y: number, args: {node?: any} = {"node": undefined}) {
     super(id, name, x, y);
@@ -34,12 +36,14 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
     this.width = undefined;
     this.height = undefined;
     this._contents = {};
+    this.isLocked = false;
     this.html = 
       '<div id="' + this.id + '" class="window window-container">' +
         '<div class="window-head">' +
           '<img src=' + IconPath.FOLDER + '>' +
           '<span>' + this.name + '</span>' +
           '<div class="button button-close"></div>' +
+          '<div class="button button-lock"></div>' +
         '</div>' +
         '<div class="window-content">' +
           '<div class="window-filler"></div>' +
@@ -98,7 +102,23 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
     this.content.addEventListener("scroll", (_: Event) => {
       this.resizeContent();
     });
+
+    let buttonLock = this.head.getElementsByClassName("button-lock")[0];
+    let updateLock= () => {
+      buttonLock.classList.toggle("button-pressed", this.isLocked);
+      this.element.classList.toggle("locked", this.isLocked);
+    }
+    if (buttonLock != undefined) {
+      buttonLock.addEventListener("mousedown", (e) => {e.stopPropagation();});
+      buttonLock.addEventListener("click", (e) => {
+        this.toggleLock();
+        updateLock();
+      });
+    }
+    await LockedStateDB.load(this);
+    updateLock();
   }
+
 
   open(): void {
     this.element.hidden = false;
@@ -106,6 +126,14 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
   }
 
   close(): void {this.element.hidden = true;}
+
+  dragMove(e: MouseEvent): void {
+    if (!this.isLocked) super.dragMove(e);
+  }
+
+  dragStop(e: MouseEvent): void {
+    if (!this.isLocked) super.dragStop(e);
+  }
 
   resizeContent(): void {
     if (this.content.scrollWidth != this.content.clientWidth) {

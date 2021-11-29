@@ -12,6 +12,7 @@ import { GridFree } from "./GridFree.js";
 import { WindowBookmarkCreate } from "./windows/WindowBookmarkCreate.js";
 import { Bookmarks } from "./Bookmarks.js";
 import { WindowDisplayProperties } from "./windows/WindowDisplayProperties.js";
+import { Desktop } from "./DesktopSingle.js";
 
 export class ContextMenu {
   static _menu: (MenuItem | MenuItemDivider)[];
@@ -36,6 +37,7 @@ export class ContextMenu {
     let itemRemove =          this.addItem(new MenuItem("Remove", [Target.ICON]));
     let itemRename =          this.addItem(new MenuItem("Rename", [Target.ICON]));
                               this.addItem(new MenuItemDivider());
+    let itemDesktopLock =     this.addItem(new MenuItem("Lock icons", [Target.DESKTOP]));
     let itemDisplayProps =    this.addItem(new MenuItem("Properties", [Target.DESKTOP]));
     
     //Add Bookmark
@@ -120,6 +122,18 @@ export class ContextMenu {
       container.grid = GridFree.from(container.grid);
     });
 
+    //Desktop Lock
+    itemDesktopLock.onSetTarget = () => {
+      let container = itemDesktopLock.currentTarget as Desktop;
+      itemDesktopLock.element.classList.toggle("checked", container.isLocked);
+    }
+
+    itemDesktopLock.addEventListener("click", () => {
+      let container = itemDesktopLock.currentTarget as Desktop;
+      container.toggleLock();
+    });
+
+    //Display Properties
     itemDisplayProps.addEventListener("click", () => {
       WindowDisplayProperties.get().open();
     });

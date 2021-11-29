@@ -109,6 +109,10 @@ a {
     margin: 2em 0.2em 1.6em 0.2em;
     overflow: auto;
   }
+
+  &.locked {
+    resize: none;
+  }
 }
 
 .window-error {
@@ -294,6 +298,10 @@ a {
   background: $color_window_background;
   margin: 0.2em;
   color: #000;
+
+  &.button-pressed {
+    @include border_inline;
+  }
 }
 
 .button-medium {
@@ -323,6 +331,13 @@ a {
     line-height: 1.2em;
     display: block;
   }
+}
+
+.button-lock {
+  width: $button-small-width;
+  height: $button-small-height;
+  float: right;
+  background: $color_window_background url('../icons/lock-closed.svg');
 }
 
 .icon {
@@ -429,7 +444,7 @@ a {
     @include state_disabled;
     padding: .15em 1.4em;
 
-    .checked {
+    &.checked {
       position: relative;
       &::after {
         position: absolute;

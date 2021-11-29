@@ -12,6 +12,7 @@ import { IFocusable } from "../interfaces/IFocusable.js";
 import { WindowGeneric } from "./windows/WindowGeneric.js";
 import { ContainerMixin } from "./mixins/Container.js";
 import { DisplayPropertiesDB } from "./db/DisplayPropertiesDB.js";
+import { LockedStateDB } from "./db/LockedStateDB.js";
 
 export class Desktop extends ContainerMixin(class{}){
   static SYSTEM_FOLDERS_IDS: string[] = ["bookmarks"];
@@ -28,6 +29,7 @@ export class Desktop extends ContainerMixin(class{}){
   _contents: {[key: string]: Icon};
   contextMenu: ContextMenu;
   _grid: Grid = undefined;
+  isLocked: boolean;
 
   offsetX: number;
   offsetY: number;
@@ -35,8 +37,8 @@ export class Desktop extends ContainerMixin(class{}){
 
   get grid(): Grid {return this._grid;}
   set grid(grid: Grid) {
-    GridTypeDB.save(this);
     this._grid = grid;
+    GridTypeDB.save(this)
   }
 
   static get(): Desktop {
@@ -60,6 +62,7 @@ export class Desktop extends ContainerMixin(class{}){
     this.offsetX = 0;
     this.offsetY = 0;
     this.zIndex = 0;
+    this.isLocked = false;
   }
 
   async create(): Promise<void> {
@@ -100,6 +103,7 @@ export class Desktop extends ContainerMixin(class{}){
     });
 
     this.element.addEventListener("mousedown", () => this.focus());
+    await LockedStateDB.load(this);
   }
 
   getContainerFocused(): IFocusable {
