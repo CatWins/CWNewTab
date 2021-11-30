@@ -14,29 +14,16 @@ export class Bookmarks {
   static async getFolderContents(nodes: BookmarkTreeNode[]): Promise<Icon[]> {
     let res: Icon[] = [];
     for (let node of nodes) {
-      let is_folder = (!node.url);
-      if (is_folder) {
-        res.push(new Icon(
-          "_bookmark_folder_" + node.id,
-          node.title,
-          (node.index % 8 * 60) + 10,
-          Math.floor(node.index / 8) * 80,
-          {
-            "node": node
-          }
-        ));
-      } else {
-        res.push(new Icon(
-          "_bookmark_" + node.id,
-          node.title,
-          (node.index % 8 * 60) + 10,
-          Math.floor(node.index / 8) * 80,
-          {
-            "url": node.url,
-            "node": node
-          }
-        ));
-      }
+      res.push(new Icon(
+        node.id,
+        node.title,
+        (node.index % 8 * 60) + 10,
+        Math.floor(node.index / 8) * 80,
+        {
+          "url": node.url,
+          "node": node
+        }
+      ));
     }
     return res;
   }

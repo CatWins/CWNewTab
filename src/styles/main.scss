@@ -317,27 +317,59 @@ a {
   margin: 1em auto 0;
 }
 
-.button-close {
+.button-header {
   width: $button-small-width;
   height: $button-small-height;
   float: right;
+  position: relative;
 
-  &:after {
-    content: "X";
-    font-weight: bold;
-    text-align: center;
-    width: 100%;
-    height: 1.2em;
-    line-height: 1.2em;
+  &::after {
+    width: $button-small-width;
+    height: $button-small-height;
+    content: "";
     display: block;
+    background: black;
+  }
+
+  &.disabled {
+    &::after {
+      background: $color_border;
+    }
+
+    :first-child {
+      background: white;
+      display: block;
+    }
+  }
+
+  :first-child {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: none;
+    top: 5%;
+    left: 5%;
+  }
+}
+
+.button-close {
+  &::after {
+    mask: url("../icons/cross-sign.svg");
+  }
+
+  :first-child {
+    mask: url("../icons/cross-sign.svg");
   }
 }
 
 .button-lock {
-  width: $button-small-width;
-  height: $button-small-height;
-  float: right;
-  background: $color_window_background url('../icons/lock-closed.svg');
+  &::after {
+    mask: url('../icons/lock-closed.svg');
+  }
+
+  :first-child {
+    mask: url("../icons/lock-closed.svg");
+  }
 }
 
 .icon {

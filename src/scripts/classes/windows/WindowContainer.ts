@@ -12,6 +12,7 @@ import { GridTypeDB } from "../db/GridTypeDB.js";
 import { WindowGeneric } from "./WindowGeneric.js";
 import { ContainerMixin } from "../mixins/Container.js";
 import { LockedStateDB } from "../db/LockedStateDB.js";
+import { ContainersPreloadDB } from "../db/ContainersPreloadDB.js";
 
 export class WindowContainer extends ContainerMixin(WindowGeneric) {
   static PREFIX = "_wcontainer_";
@@ -42,8 +43,8 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
         '<div class="window-head">' +
           '<img src=' + IconPath.FOLDER + '>' +
           '<span>' + this.name + '</span>' +
-          '<div class="button button-close"></div>' +
-          '<div class="button button-lock"></div>' +
+          '<div class="button button-header button-close"><div></div></div>' +
+          '<div class="button button-header button-lock"><div></div></div>' +
         '</div>' +
         '<div class="window-content">' +
           '<div class="window-filler"></div>' +
@@ -107,12 +108,14 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
     let updateLock= () => {
       buttonLock.classList.toggle("button-pressed", this.isLocked);
       this.element.classList.toggle("locked", this.isLocked);
+      this.buttonClose.classList.toggle("disabled", this.isLocked);
     }
     if (buttonLock != undefined) {
       buttonLock.addEventListener("mousedown", (e) => {e.stopPropagation();});
       buttonLock.addEventListener("click", (e) => {
         this.toggleLock();
         updateLock();
+        ContainersPreloadDB.save(desktop);
       });
     }
     await LockedStateDB.load(this);

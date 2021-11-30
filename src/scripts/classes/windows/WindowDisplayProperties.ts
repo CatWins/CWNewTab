@@ -39,7 +39,7 @@ export class WindowDisplayProperties extends WindowGeneric {
       '<div id="' + this.id + '" class="window window-desktop-properties">' +
         '<div class="window-head">' +
           '<span>' + this.name + '</span>' +
-          '<div class="button button-close"></div>' +
+          '<div class="button button-header button-close"><div></div></div>' +
         '</div>' +
         '<div class="window-content">' +
           '<form>' +

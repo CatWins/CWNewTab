@@ -8,6 +8,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
   
   head: HTMLDivElement;
   headTitle: HTMLSpanElement;
+  buttonClose: HTMLDivElement;
   _zIndex: number;
 
   protected html: string;
@@ -18,6 +19,7 @@ export class WindowGeneric extends MovableObject implements IFocusable {
     this.element = undefined;
     this.head = undefined;
     this.headTitle = undefined;
+    this.buttonClose = undefined;
     this.draggable = undefined;
     this._zIndex = 0;
   }
@@ -39,10 +41,10 @@ export class WindowGeneric extends MovableObject implements IFocusable {
     this.element.style.left = this.x + "px";
     this.element.style.top = this.y + "px";
     this.makeDraggable();
-    let buttonClose = this.element.getElementsByClassName("button-close")[0];
-    if (buttonClose != undefined) {
-      buttonClose.addEventListener("mousedown", (e) => {e.stopPropagation();});
-      buttonClose.addEventListener("click", (e) => {this.close(); e.stopPropagation();});
+    this.buttonClose = this.element.getElementsByClassName("button-close")[0] as HTMLDivElement;
+    if (this.buttonClose != undefined) {
+      this.buttonClose.addEventListener("mousedown", (e) => {e.stopPropagation();});
+      this.buttonClose.addEventListener("click", (e) => {this.close(); e.stopPropagation();});
     }
     desktop.registerWindow(this);
     this.focus();

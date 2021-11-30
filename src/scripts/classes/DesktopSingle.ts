@@ -13,6 +13,7 @@ import { WindowGeneric } from "./windows/WindowGeneric.js";
 import { ContainerMixin } from "./mixins/Container.js";
 import { DisplayPropertiesDB } from "./db/DisplayPropertiesDB.js";
 import { LockedStateDB } from "./db/LockedStateDB.js";
+import { ContainersPreloadDB } from "./db/ContainersPreloadDB.js";
 
 export class Desktop extends ContainerMixin(class{}){
   static SYSTEM_FOLDERS_IDS: string[] = ["bookmarks"];
@@ -21,7 +22,6 @@ export class Desktop extends ContainerMixin(class{}){
   windows: {[key: string]: WindowGeneric};
   type: Target;
   id: string;
-//  nodeId: string = undefined;
   order: string[];
   element: HTMLDivElement;
   content: HTMLDivElement;
@@ -104,6 +104,7 @@ export class Desktop extends ContainerMixin(class{}){
 
     this.element.addEventListener("mousedown", () => this.focus());
     await LockedStateDB.load(this);
+    await ContainersPreloadDB.load(this);
   }
 
   getContainerFocused(): IFocusable {
@@ -165,7 +166,7 @@ export class Desktop extends ContainerMixin(class{}){
   unregisterWindow(w: WindowGeneric): void {
     this.setContainerFocused(w);
     this.order.pop();
-    this.windows[w.id] = undefined;
+    delete this.windows[w.id];
   }
 
   getContainer(id: string): WindowGeneric | Desktop {
@@ -182,7 +183,7 @@ export class Desktop extends ContainerMixin(class{}){
   }
 
   setBackgroundImage(imagePath: string): void {
-    this.element.style.backgroundImage = "url(" + imagePath + ")";
+    this.element.style.backgroundImage = (imagePath == null) ? null : "url(" + imagePath + ")";
   }
 
   resetBackgroundImage(): void {

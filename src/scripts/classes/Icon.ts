@@ -60,7 +60,7 @@ export class Icon extends MovableObject {
     });
     this.icon.src = this.favicon;
     this.makeDraggable();
-    if (this.node != undefined) {
+    if (this.url == undefined) {
       this.element.addEventListener("dblclick", () => {
         let w = desktop.getContainer(WindowContainer.PREFIX + this.nodeId) as WindowContainer;
         if (w == undefined) {
