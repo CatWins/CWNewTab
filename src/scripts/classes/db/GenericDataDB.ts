@@ -1,5 +1,7 @@
 import { EventEmitter } from "../EventEmitter.js";
 
+var browser: any = browser || chrome;
+
 export class GenericDataDB {
   static tag: string;
   static data: any;
@@ -40,7 +42,7 @@ export class GenericDataDB {
     try {
       let data = await this.getData(obj);
       if (!this.isValid(data)) return;
-      window.localStorage.setItem(obj.id + this.tag, JSON.stringify(data));
+      await browser.storage.local.set({[obj.id + this.tag]: JSON.stringify(data)});
     } catch (error) {
       EventEmitter.dispatchErrorEvent(error);
     }
@@ -48,7 +50,9 @@ export class GenericDataDB {
 
   static async load(obj: any, fallback: any = undefined): Promise<void> {
     try {
-      let data = JSON.parse(window.localStorage.getItem(obj.id + this.tag));
+      let id = obj.id + this.tag;
+      let jsonData = await browser.storage.local.get(id);
+      let data = (jsonData[id] == undefined) ? undefined : JSON.parse(jsonData[id]);
       if (!this.isValid(data)) data = fallback || this.data;
       await this.setData(obj, data);
     } catch (error) {
