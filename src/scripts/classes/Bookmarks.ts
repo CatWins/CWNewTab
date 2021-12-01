@@ -28,6 +28,20 @@ export class Bookmarks {
     return res;
   }
 
+  static async getDesktopNode(): Promise<BookmarkTreeNode> {
+    let root = await this.getRootNode();
+    return root.children[1] || root;
+  }
+
+  static async getDesktopContents(): Promise<Icon[]> {
+    let root = await this.getRootNode();
+    let contents = await this.getFolderContents([root.children[0]]);
+    for (let i = 1; i < root.children.length; i++) {
+      contents = contents.concat(await this.getFolderContents(root.children[i].children));
+    }
+    return contents;
+  }
+
   static async getFolderContentsDelta(folderNode: BookmarkTreeNode): Promise<FolderContentsDelta> {
     try {
       let newContents = await this.getNode(folderNode.id);

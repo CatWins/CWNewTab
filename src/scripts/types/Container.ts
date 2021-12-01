@@ -19,6 +19,6 @@ export type Container = {
   getIcon: (id: string) => Icon,
   addIcon: (icon: Icon) => void,
   removeIcon: (icon: Icon) => void,
-  applyDelta: (delta: FolderContentsDelta) => void,
-  refreshNode: () => void,
+  applyDelta: (delta: FolderContentsDelta) => Promise<void>,
+  refreshNode: () => Promise<void>,
 }

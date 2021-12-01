@@ -52,8 +52,9 @@ export class ContextMenu {
       Bookmarks.createFolder(container.node, "New Folder").then(
         () => Bookmarks.getFolderContentsDelta(container.node).then(
         delta => {
-          container.applyDelta(delta);
-          delta.added[0].userRename();
+          container.applyDelta(delta).then(() => {
+            delta.added[0].userRename();
+          });
         }
       ));
     });

@@ -74,8 +74,8 @@ export class Desktop extends ContainerMixin(class{}){
     gridCellReference.hide();
     this._grid = new GridFree(this, this.element.offsetWidth, this.element.offsetHeight, gridCellWidth, gridCellHeight);
     //Filling contents
-    this.node = await Bookmarks.getRootNode();
-    let contents = await Bookmarks.getFolderContents(this.node.children);
+    this.node = await Bookmarks.getDesktopNode();
+    let contents = await Bookmarks.getDesktopContents();
     for (let icon of contents) {
       this.addIcon(icon);
       await icon.create(this);
