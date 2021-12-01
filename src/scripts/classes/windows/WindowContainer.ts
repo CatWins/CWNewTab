@@ -157,7 +157,7 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
     this.height = this.element.clientHeight;
     DimensionsDB.save(this);
     if (this.grid.type == GridType.STRICT) {
-      this.grid.redefine(this.content.clientWidth, this.content.clientHeight);
+      this.grid.redefine(this.content.clientWidth - 1, this.content.clientHeight - 1); //client width/height is rounded, so do -1 to prevent 1 pixel scrollbar bug
       this.filler.style.width = null;
       this.filler.style.height = null;
     } else {
