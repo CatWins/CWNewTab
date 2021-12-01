@@ -54,7 +54,6 @@ export class MovableObject {
       if (e.button != 0) return
       if (is_icon) {
         (this.element.children[0] as HTMLLinkElement).focus();
-        this.element.style.zIndex = 10 .toString();
       }
       MovableObject.mouseX = e.clientX;
       MovableObject.mouseY = e.clientY;

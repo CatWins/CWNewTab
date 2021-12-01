@@ -375,14 +375,32 @@ a {
 .icon {
   width: $icon-width;
   height: $icon-height;
-  padding: 0.1em;
   position: absolute;
 
+  span {
+    padding: 0.1em;
+  }
+
   &:focus-within {
-    min-height: 5em;
-    height: auto;
-    padding: 0;
-    border: 0.1em dashed #f00;
+    z-index: 10;
+
+    img {
+      filter: url("./filters.svg#image-blue");
+    }
+    span {
+      background: $color-menu-selected;
+      color: white;
+      padding: 0;
+      border: 0.1em dashed #ff0;
+    }
+  }
+}
+
+#desktop {
+  >.icon {
+    span {
+      color: white;
+    }
   }
 }
 
@@ -495,7 +513,7 @@ a {
       }
     }
     &:hover {
-      background: $color_menu_selected;
+      background: $color-menu-selected;
       color: white;
     }
   }
