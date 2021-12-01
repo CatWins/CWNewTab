@@ -64,7 +64,9 @@ export class Icon extends MovableObject {
       this.element.addEventListener("dblclick", () => {
         let w = desktop.getContainer(WindowContainer.PREFIX + this.nodeId) as WindowContainer;
         if (w == undefined) {
-          w = new WindowContainer(this.nodeId, this.name, 180, 160, {"node": this.node});
+          let x = 120, y = 120;
+          if (this.container.type == Target.WINDOW) { x = (this.container as WindowContainer).x + 36; y = (this.container as WindowContainer).y + 36; }
+          w = new WindowContainer(this.nodeId, this.name, x, y, {"node": this.node});
           w.create();
         } else {
           if (w.element.hidden) w.open();

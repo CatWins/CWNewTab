@@ -17,8 +17,8 @@ export class Bookmarks {
       res.push(new Icon(
         node.id,
         node.title,
-        (node.index % 8 * 60) + 10,
-        Math.floor(node.index / 8) * 80,
+        -999999,
+        -999999,
         {
           "url": node.url,
           "node": node
