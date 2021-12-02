@@ -90,7 +90,8 @@ export class WindowDisplayProperties extends WindowGeneric {
   get id(): string {return WindowDisplayProperties.PREFIX + this._id;}
 
   async create(): Promise<void> {
-    await super.create();
+    await super.create({savePosition: false});
+    this.center();
     this.form = this.element.getElementsByTagName("form")[0] as HTMLFormElement;
     this.radioBackgroundColorDefault = document.getElementById("background-color-radio-input-default") as HTMLInputElement;
     this.radioBackgroundColorCustom = document.getElementById("background-color-radio-input-custom") as HTMLInputElement;

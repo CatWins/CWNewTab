@@ -90,6 +90,20 @@ export class WindowBookmarkCreate extends WindowGeneric {
       this.buttonNext.innerText = "Finish";
     }
 
+    let focusInput = () => {
+      if (this.inputUrl.offsetParent != null) this.inputUrl.focus();
+      if (this.inputName.offsetParent != null) this.inputName.focus();
+    }
+
+    let isInputValid = (): boolean => {
+      if (this.inputUrl.offsetParent != null && this.inputUrl.value.length > 0) return true;
+      if (this.inputName.offsetParent != null && this.inputName.value.length > 0) return true;
+      return false;
+    }
+
+    this.buttonNext.classList.add("disabled");
+    focusInput();
+
     this.buttonCancel.addEventListener("click", (e: MouseEvent) => {this.close(); e.stopPropagation();});
 
     let nextPage = () => {
@@ -104,6 +118,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
         if (this.activePageIndex == 1) {
           this.buttonBack.classList.remove("disabled");
         }
+        this.buttonNext.classList.toggle("disabled", !isInputValid());
       } else {
         //Finisher: gather data, perform actions.
         Bookmarks.createBookmark(this.container.node, this.inputName.value, this.inputUrl.value).then(
@@ -112,6 +127,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
         ));
         this.close();
       }
+      focusInput();
     }
 
     this.buttonNext.addEventListener("click", nextPage);
@@ -119,7 +135,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
       if (e.key == "Enter") {
         e.preventDefault();
         e.stopPropagation();
-        nextPage();
+        if (isInputValid()) nextPage();
       }
     }, true);
 
@@ -134,8 +150,13 @@ export class WindowBookmarkCreate extends WindowGeneric {
         if (this.activePageIndex == 0) {
           this.buttonBack.classList.add("disabled");
         }
+        this.buttonNext.classList.toggle("disabled", !isInputValid());
       }
+      focusInput();
     }
+
+    this.inputName.addEventListener("input", () => {this.buttonNext.classList.toggle("disabled", !isInputValid());})
+    this.inputUrl.addEventListener("input", () => {this.buttonNext.classList.toggle("disabled", !isInputValid());})
 
     this.buttonBack.addEventListener("click", previousPage);
   }
