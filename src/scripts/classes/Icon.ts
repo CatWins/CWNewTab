@@ -1,6 +1,6 @@
 import { IconPath } from "../enums/IconPath.js";
 import { Desktop, desktop } from "./DesktopSingle.js";
-import { MovableObject } from "./MovableObject.js";
+import { MovableObject, MovableObjectCreateOptions } from "./MovableObject.js";
 import { WindowContainer } from "./windows/WindowContainer.js";
 import { Target } from "../enums/Target.js";
 import { Container } from "../types/Container.js";
@@ -45,8 +45,8 @@ export class Icon extends MovableObject {
 
   get id(): string {return Icon.PREFIX + this._id;}
 
-  async create(container: Container = desktop): Promise<void> {
-    await super.create();
+  async create(options: MovableObjectCreateOptions = {}, container: Container = desktop): Promise<void> {
+    await super.create(options);
     this.container = container;
     container.content.insertAdjacentHTML('beforeend', this.html);
     this.element = document.getElementById(this.id) as HTMLDivElement;

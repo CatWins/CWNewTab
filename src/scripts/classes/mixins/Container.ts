@@ -41,7 +41,7 @@ export function ContainerMixin<BaseClass extends Constructor>(BaseClass: BaseCla
       if (delta.added != undefined) {
         for (let icon of delta.added) {
           this.addIcon(icon);
-          await icon.create(this);
+          await icon.create({}, this);
           this.grid.addCell(icon);
         }
       }

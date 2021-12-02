@@ -1,7 +1,7 @@
 import { Target } from "../../enums/Target";
 import type { IFocusable } from "../../interfaces/IFocusable";
 import { desktop } from "../DesktopSingle.js";
-import { MovableObject } from "../MovableObject.js";
+import { MovableObject, MovableObjectCreateOptions } from "../MovableObject.js";
 
 export class WindowGeneric extends MovableObject implements IFocusable {
   static PREFIX = "_wgeneric_";
@@ -31,8 +31,8 @@ export class WindowGeneric extends MovableObject implements IFocusable {
     this.element.style.zIndex = this._zIndex.toString();
   }
 
-  async create() {
-    await super.create();
+  async create(options: MovableObjectCreateOptions = {}) {
+    await super.create(options);
     desktop.content.insertAdjacentHTML('beforeend', this.html);
     this.element = document.getElementById(this.id) as HTMLDivElement;
     this.head = this.element.getElementsByClassName("window-head")[0] as HTMLDivElement;

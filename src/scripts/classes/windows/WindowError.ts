@@ -1,4 +1,5 @@
 import { IconPath } from "../../enums/IconPath";
+import { getRandomId } from "../../Utility.js";
 import { desktop } from "../DesktopSingle.js";
 import { WindowGeneric } from "./WindowGeneric.js";
 
@@ -7,8 +8,8 @@ let defaultArgs = {"error": undefined as Error, "message": "Something went wrong
 export class WindowError extends WindowGeneric {
   static PREFIX = "_werror_";
 
-  constructor(id: string, name: string, x: number, y: number, args: {error?: Error, message?: string} = defaultArgs) {
-    super(id, name, x, y);
+  constructor(name: string, x: number, y: number, args: {error?: Error, message?: string} = defaultArgs) {
+    super(getRandomId(), name, x, y);
     let message = (args.error != undefined) ? (args.error.stack || args.error.message) : (args.message || defaultArgs.message);
     console.log(message);
     message = message
@@ -37,7 +38,7 @@ export class WindowError extends WindowGeneric {
   get id(): string {return WindowError.PREFIX + this._id;}
 
   async create(): Promise<void> {
-    await super.create();
+    await super.create({savePosition: false});
     let buttonOk = this.element.getElementsByClassName("button-ok")[0];
     buttonOk.addEventListener("click", (e: MouseEvent) => {
       e.stopPropagation();

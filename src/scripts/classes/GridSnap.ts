@@ -5,7 +5,7 @@ import { Icon } from "./Icon.js";
 
 export class GridSnap extends Grid {
   static from(grid: Grid): GridSnap {
-    let gridSnap = new GridSnap(grid.container, grid.width, grid.height, grid.cellWidth, grid.cellHeight);
+    let gridSnap = new GridSnap(grid.container, grid.container.content.scrollWidth, grid.container.content.scrollHeight, grid.cellWidth, grid.cellHeight);
     gridSnap._grid = grid.grid;
     gridSnap.snapIconsToGrid();
     return gridSnap;

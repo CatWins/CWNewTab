@@ -4,7 +4,7 @@ import { Grid } from "./Grid.js";
 
 export class GridStrict extends Grid {
   static from(grid: Grid): GridStrict {
-    let gridStrict = new GridStrict(grid.container, grid.container.content.clientWidth, grid.container.content.clientHeight, grid.cellWidth, grid.cellHeight);
+    let gridStrict = new GridStrict(grid.container, grid.container.content.clientWidth - 1, grid.container.content.clientHeight - 1, grid.cellWidth, grid.cellHeight);
     gridStrict._grid = grid.grid;
     gridStrict._grid = gridStrict._grid.filter(e => e != undefined);
     gridStrict.sort();

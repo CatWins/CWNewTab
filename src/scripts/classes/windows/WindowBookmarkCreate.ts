@@ -72,7 +72,7 @@ export class WindowBookmarkCreate extends WindowGeneric {
   get id(): string {return WindowBookmarkCreate.PREFIX + this._id;}
 
   async create(): Promise<void> {
-    await super.create();
+    await super.create({savePosition: false});
     this.pagedContent = this.element.getElementsByClassName("paged-content")[0] as HTMLDivElement;
     this.pages = this.pagedContent.getElementsByClassName("paged-content-page") as HTMLCollectionOf<HTMLDivElement>;
     this.buttonBack = this.element.getElementsByClassName("button-back")[0] as HTMLDivElement;

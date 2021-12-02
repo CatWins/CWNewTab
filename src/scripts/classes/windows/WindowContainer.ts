@@ -89,10 +89,10 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
     let gridCellWidth = Math.floor(gridCellReference.element.offsetWidth);
     let gridCellHeight = Math.floor(gridCellReference.element.offsetHeight);
     gridCellReference.hide();
-    this._grid = new GridFree(this, this.width, this.height, gridCellWidth, gridCellHeight);
+    this._grid = new GridFree(this, this.content.scrollWidth, this.content.scrollHeight, gridCellWidth, gridCellHeight);
     for (let icon of contents) {
       this.addIcon(icon);
-      await icon.create(this);
+      await icon.create({}, this);
       this.grid.addCell(icon);
     }
     await GridTypeDB.load(this);

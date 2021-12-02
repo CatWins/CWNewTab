@@ -78,7 +78,7 @@ export class Desktop extends ContainerMixin(class{}){
     let contents = await Bookmarks.getDesktopContents();
     for (let icon of contents) {
       this.addIcon(icon);
-      await icon.create(this);
+      await icon.create({}, this);
       this.grid.addCell(icon);
     }
     await GridTypeDB.load(this);

@@ -1,6 +1,10 @@
 import { Target } from "../enums/Target.js";
 import { PositionDB } from "./db/PositionDB.js";
 
+export type MovableObjectCreateOptions = {
+  savePosition?: boolean
+}
+
 export class MovableObject {
   static mouseX: number;
   static mouseY: number;
@@ -23,8 +27,8 @@ export class MovableObject {
     this._id = id; this.name = name; this.x = x; this.y = y;
   }
 
-  async create() {
-    await PositionDB.load(this, {"x": this.x, "y": this.y});
+  async create({savePosition = true}: MovableObjectCreateOptions = {}) {
+    if (savePosition) await PositionDB.load(this, {"x": this.x, "y": this.y});
   }
 
   get id(): string {return MovableObject.PREFIX + this._id;}
