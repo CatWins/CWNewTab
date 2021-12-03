@@ -10,6 +10,7 @@ import { Grid } from "./Grid.js";
 import { PositionDB } from "./db/PositionDB.js";
 import { Bookmarks } from "./Bookmarks.js";
 import { EventEmitter } from "./EventEmitter.js";
+import { IconType } from "../enums/IconType";
 
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
@@ -17,6 +18,8 @@ export class Icon extends MovableObject {
 
   url: string;
   node: BookmarkTreeNode;
+  urlBase: string;
+  urlDomain: string;
   favicon: string;
   html: string;
   icon: HTMLImageElement;
@@ -28,7 +31,12 @@ export class Icon extends MovableObject {
     this.type = Target.ICON;
     this.url = args.url;
     this.node = args.node;
-    this.favicon = (this.url == undefined) ? IconPath.FOLDER : this.url.split("/").filter((_, i) => (i < 3)).join("/") + "/favicon.ico";
+    if (this.url != undefined) {
+      this.urlBase = this.url.split("/").filter((_, i) => (i < 3)).join("/");
+      this.urlDomain = this.urlBase.split("://")[1];
+    } else {
+      this.favicon = IconPath.FOLDER;
+    }
     this.html = 
       '<div id="' + this.id + '" class="icon">' +
         '<a href="#">' +
@@ -55,12 +63,44 @@ export class Icon extends MovableObject {
     this.element.style.left = this.x.toString() + "px";
     this.nameElement = this.element.getElementsByTagName("span")[0];
     this.icon = this.element.getElementsByTagName("img")[0];
-    this.icon.addEventListener('error', () => {
-      this.icon.src = IconPath.DEFAULT;
-    });
-    this.icon.src = this.favicon;
+    
+    if (this.url != undefined) {
+      let iconType = IconType.ENUM_LENGTH;
+      let tryNextIconType = (): void => {
+        switch (--iconType) {
+          case IconType.ICO:
+            this.favicon = this.urlBase + "/favicon.ico";
+            break;
+          case IconType.PNG:
+            this.favicon = this.urlBase + "/favicon.png";
+            break;
+          //Can't find out how to part true favicons returned by Google and DDG from placeholders
+          case IconType.GOOGLE_API:
+//            this.favicon = "https://s2.googleusercontent.com/s2/favicons?sz=64&domain_url=" + this.urlBase;
+            break;
+          case IconType.DUCKDUCKGO_API:
+//            this.favicon = "https://icons.duckduckgo.com/ip3/" + this.urlDomain + ".ico";
+            break;
+          case IconType.YANDEX_API:
+            this.favicon = "https://favicon.yandex.net/favicon/" + this.urlDomain;
+            break;
+          case IconType.DEFAULT:
+            this.favicon = IconPath.DEFAULT;
+            break;
+          default:
+            EventEmitter.dispatchErrorEvent(new Error("Can't load any favicon for Icon: " + this.id));
+            return;
+        }
+        this.icon.src = this.favicon;
+      }
+
+      this.icon.addEventListener('error', () => {tryNextIconType();});
+      this.icon.addEventListener('load', () => {if (this.icon.naturalWidth < 8) tryNextIconType();});
+    }
+
     this.makeDraggable();
     if (this.url == undefined) {
+      this.icon.src = this.favicon;
       this.element.addEventListener("dblclick", () => {
         let w = desktop.getContainer(WindowContainer.PREFIX + this.nodeId) as WindowContainer;
         if (w == undefined) {
