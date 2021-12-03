@@ -11,6 +11,7 @@ import { PositionDB } from "./db/PositionDB.js";
 import { Bookmarks } from "./Bookmarks.js";
 import { EventEmitter } from "./EventEmitter.js";
 import { IconType } from "../enums/IconType";
+import { FaviconTypeDB } from "./db/FaviconTypeDB.js";
 
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
@@ -20,6 +21,7 @@ export class Icon extends MovableObject {
   node: BookmarkTreeNode;
   urlBase: string;
   urlDomain: string;
+  faviconType: IconType;
   favicon: string;
   html: string;
   icon: HTMLImageElement;
@@ -49,6 +51,7 @@ export class Icon extends MovableObject {
     this.icon = undefined;
     this.nameElement = undefined;
     this.container = undefined;
+    this.faviconType = undefined;
   }
 
   get id(): string {return Icon.PREFIX + this._id;}
@@ -65,9 +68,9 @@ export class Icon extends MovableObject {
     this.icon = this.element.getElementsByTagName("img")[0];
     
     if (this.url != undefined) {
-      let iconType = IconType.ENUM_LENGTH;
+      await FaviconTypeDB.load(this);
       let tryNextIconType = (): void => {
-        switch (--iconType) {
+        switch (--this.faviconType) {
           case IconType.ICO:
             this.favicon = this.urlBase + "/favicon.ico";
             break;
@@ -95,7 +98,16 @@ export class Icon extends MovableObject {
       }
 
       this.icon.addEventListener('error', () => {tryNextIconType();});
-      this.icon.addEventListener('load', () => {if (this.icon.naturalWidth < 8) tryNextIconType();});
+      this.icon.addEventListener('load', () => {
+        if (this.icon.naturalWidth < 8) {
+          tryNextIconType()
+        } else {
+          FaviconTypeDB.save(this);
+        }
+      });
+
+      this.faviconType++;
+      tryNextIconType();
     }
 
     this.makeDraggable();
