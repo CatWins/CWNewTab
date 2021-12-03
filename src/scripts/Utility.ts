@@ -14,3 +14,24 @@ export function rgbToHex(rgbString: string) {
   let [r, g, b] = rgbString.trim().slice(4, -1).split(",").map((e) => parseInt(e));
   return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
 }
+
+export function openDataUri(url: string): void {
+    let html = 
+      '<html>' +
+      '<style>' +
+        'html, body {' +
+          'padding: 0;' +
+          'margin: 0;' +
+        '}' +
+        'iframe {' +
+          'width: 100%;' +
+          'height: 100%;' +
+          'border: 0;' +
+        '}' +
+      '</style>' +
+      '<body>' +
+      '<iframe src="' + url + '"></iframe>' +
+      '</body></html>';
+    let a = window.open();
+    a.document.write(html);
+}

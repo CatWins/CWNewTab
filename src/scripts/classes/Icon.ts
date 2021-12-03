@@ -12,6 +12,7 @@ import { Bookmarks } from "./Bookmarks.js";
 import { EventEmitter } from "./EventEmitter.js";
 import { IconType } from "../enums/IconType";
 import { FaviconTypeDB } from "./db/FaviconTypeDB.js";
+import { openDataUri } from "../Utility.js";
 
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
@@ -66,8 +67,10 @@ export class Icon extends MovableObject {
     this.element.style.left = this.x.toString() + "px";
     this.nameElement = this.element.getElementsByTagName("span")[0];
     this.icon = this.element.getElementsByTagName("img")[0];
+    this.makeDraggable();
     
     if (this.url != undefined) {
+      //Bookmark case (has url)
       await FaviconTypeDB.load(this);
       let tryNextIconType = (): void => {
         switch (--this.faviconType) {
@@ -108,10 +111,21 @@ export class Icon extends MovableObject {
 
       this.faviconType++;
       tryNextIconType();
-    }
 
-    this.makeDraggable();
-    if (this.url == undefined) {
+      this.element.addEventListener("dblclick", () => {
+        let schema = this.url.split(":")[0];
+        if ("data" == schema) {
+          openDataUri(this.url);
+        } else {
+          try {
+            window.location.assign(this.url);
+          } catch (error) {
+            EventEmitter.dispatchErrorEvent(error);
+          }
+        }
+      });
+    } else {
+      //Folder case
       this.icon.src = this.favicon;
       this.element.addEventListener("dblclick", () => {
         let w = desktop.getContainer(WindowContainer.PREFIX + this.nodeId) as WindowContainer;
