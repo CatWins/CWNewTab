@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <circle cx="50" cy="50" r="50" fill="rgb(125,100,100)" />
-  <text x="50%" y="57%" text-anchor="middle" dominant-baseline="middle" font-family="mono" font-size="80" fill="rgb(225,180,0)">&#128193;</text>
+  <path d="M 3 25 L 97 25 97 97 3 97 3 25 22 3 55 3 75 25" fill="#e0e060"/>
+  <path d="M 1 25 L 22 3 55 3" stroke="#c0c0c0" stroke-width="6" fill="none"/>
+  <path d="M 50 -3 L 75 25" stroke="black" stroke-width="6" fill="none"/>
+  <path d="M 3 100 L 3 25 97 25" stroke="#c0c0c0" stroke-width="6" fill="none"/>
+  <path d="M 97 22 L 97 97 6 97" stroke="black" stroke-width="6" fill="none"/>
 </svg>
