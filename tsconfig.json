@@ -2,7 +2,7 @@
   "compilerOptions": {
     "noImplicitAny": true,
     "module": "ESNext",
-    "target": "ESNext",
+    "target": "ES2015",
     "lib": ["ESNext", "DOM"],
     "types": ["chrome"]
   },

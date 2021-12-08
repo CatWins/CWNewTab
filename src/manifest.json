@@ -10,8 +10,7 @@
   "content_security_policy": {
     "default-src": "none",
     "img-src": "https:",
-    "script-src": "self",
-    "connect-src": "ws://127.0.0.1:9000"
+    "script-src": "self"
   },
   "permissions": [
     "bookmarks",
