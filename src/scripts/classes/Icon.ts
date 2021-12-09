@@ -17,6 +17,7 @@ import { openDataUri } from "../Utility.js";
 export class Icon extends MovableObject {
   static PREFIX: string = "_i_";
   static _reference: Icon;
+  static hintContainer: Desktop | WindowContainer;
 
   url: string;
   node: BookmarkTreeNode;
@@ -218,17 +219,20 @@ export class Icon extends MovableObject {
       if (e.clientY > 0 && e.clientY < window.innerHeight) {
         ref.element.style.top = (ref.element.offsetTop + e.clientY - MovableObject.mouseY).toString() + "px";
       }
-      let xLocal = e.clientX - this.container.offsetX;
-      let yLocal = e.clientY - this.container.offsetY;
-      this.container.grid.updateHint(xLocal, yLocal);
+      let xLocal = e.clientX - Icon.hintContainer.offsetX;
+      let yLocal = e.clientY - Icon.hintContainer.offsetY;
+      Icon.hintContainer.grid.updateHint(xLocal, yLocal);
     } else {
       if (Math.abs(e.clientX - MovableObject.mouseDownX) + Math.abs(e.clientY - MovableObject.mouseDownY) > 4) {
         MovableObject.is_dragged = true;
+        desktop.element.addEventListener("mouseover", dragMouseOverCallback);
         MovableObject.clickedOffsetX = e.clientX - this.container.offsetX - this.element.offsetLeft;
         MovableObject.clickedOffsetY = e.clientY - this.container.offsetY - this.element.offsetTop;
         let xLocal = e.clientX - this.container.offsetX;
         let yLocal = e.clientY - this.container.offsetY;
-        this.container.grid.showHint(xLocal, yLocal);
+        Icon.hintContainer = this.container as Desktop | WindowContainer;
+        Grid.setHintParent(Icon.hintContainer.content);
+        Icon.hintContainer.grid.showHint(xLocal, yLocal);
         ref.setPosition(this.element.offsetLeft + this.container.offsetX, this.element.offsetTop + this.container.offsetY);
         ref.icon.src = this.icon.src;
         ref.nameElement.textContent = this.nameElement.textContent;
@@ -248,14 +252,9 @@ export class Icon extends MovableObject {
       ref.hide();
 
       //Detecting new container
-      this.element.style.pointerEvents = "none";
-      let destElement = document.elementFromPoint(e.clientX, e.clientY);
-      while (!destElement.classList.contains("window-container") && destElement.id != "desktop" && destElement != null) {
-        destElement = destElement.parentElement;
-      }
-      if (destElement.id != this.container.id) {
+      let destContainer = desktop.getContainerFromCoords(e.clientX, e.clientY);
+      if (destContainer.id != this.container.id) {
         //Move to a new container
-        let destContainer = desktop.getContainer(destElement.id) as (Desktop | WindowContainer);  //casting types here because of how we get destElement ^^^ (it's html contains either class=window-container or id=desktop)
         this.isContainerValid(destContainer).then(
           (isValid) => {
             if (isValid) {
@@ -281,6 +280,7 @@ export class Icon extends MovableObject {
                   }
 
                   this.container.content.appendChild(this.element);
+                  this.focus();
                 }
               );
             } else {
@@ -299,6 +299,7 @@ export class Icon extends MovableObject {
         Grid.hideHint();
       }
 
+      desktop.element.removeEventListener("mouseover", dragMouseOverCallback);
       this.element.style.pointerEvents = null;
       this.element.style.zIndex = null;
       MovableObject.is_dragged = false;
@@ -318,8 +319,24 @@ export class Icon extends MovableObject {
       this._reference.element.style.zIndex = "9999";
       this._reference.element.style.left = this._reference.x + "px";
       this._reference.element.style.top = this._reference.y + "px";
+      this._reference.element.style.pointerEvents = "none";
       this._reference.hide();
     }
     return this._reference;
   }
 }
+
+function dragMouseOverCallback(e: MouseEvent): void {
+  let element = e.target as HTMLElement;
+  let container = desktop.getContainerFromElement(element);
+  if (Icon.hintContainer != container) {
+    Icon.hintContainer = container;
+    if (Icon.hintContainer.grid.type == GridType.FREE) {
+      Grid.hideHint();
+    } else {
+      Grid.hint.style.display = null;
+    }
+    Grid.setHintParent(container.content);
+  }
+}
+

@@ -71,6 +71,11 @@ function images() {
 	.pipe(dest("./output/images"));
 }
 
+function filters() {
+  return src("./src/styles/filters.svg")
+  .pipe(dest("./output/styles"));
+}
+
 function styles() {
 	return src("./src/styles/main.scss")
 	.pipe(sass().on("error", sass.logError))
@@ -157,8 +162,8 @@ function archive() {
 }
 
 var clean = del.bind(null, ["output", "build.tar.gz"]);
-var build = series(clean, parallel(icons, misc, html, images, styles, scripts_prod))
-var build_dev = series(clean, parallel(icons, misc_dev, html_injected, images, styles, scripts_dev))
+var build = series(clean, parallel(filters, icons, misc, html, images, styles, scripts_prod))
+var build_dev = series(clean, parallel(filters, icons, misc_dev, html_injected, images, styles, scripts_dev))
 
 exports.html = html
 exports.misc = misc

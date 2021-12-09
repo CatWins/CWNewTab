@@ -14,6 +14,7 @@ import { ContainerMixin } from "./mixins/Container.js";
 import { DisplayPropertiesDB } from "./db/DisplayPropertiesDB.js";
 import { LockedStateDB } from "./db/LockedStateDB.js";
 import { ContainersPreloadDB } from "./db/ContainersPreloadDB.js";
+import { WindowContainer } from "./windows/WindowContainer.js";
 
 export class Desktop extends ContainerMixin(class{}){
   static SYSTEM_FOLDERS_IDS: string[] = ["bookmarks"];
@@ -172,6 +173,18 @@ export class Desktop extends ContainerMixin(class{}){
   getContainer(id: string): WindowGeneric | Desktop {
     if (id == this.id) return this;
     return this.windows[id];
+  }
+
+  getContainerFromElement(element: Element): Desktop | WindowContainer {
+    while (!element.classList.contains("window-container") && element.id != "desktop" && element != null) {
+      element = element.parentElement;
+    }
+    return desktop.getContainer(element.id) as Desktop | WindowContainer; //casting types here because of how we get destElement ^^^ (it's html contains either class=window-container or id=desktop)
+  }
+
+  getContainerFromCoords(x: number, y: number): Desktop | WindowContainer {
+    let element = document.elementFromPoint(x, y);
+    return this.getContainerFromElement(element);
   }
 
   setBackgroundColor(color: string): void {

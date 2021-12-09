@@ -96,8 +96,8 @@ export class WindowContainer extends ContainerMixin(WindowGeneric) {
       this.grid.addCell(icon);
     }
     await GridTypeDB.load(this);
-    this.filler.style.width = this.content.scrollWidth + "px";
-    this.filler.style.height = this.content.scrollHeight + "px";
+    this.filler.style.width = this.content.scrollWidth - 1 + "px";
+    this.filler.style.height = this.content.scrollHeight - 1 + "px";
     WindowContainer.resizeObserver.observe(this.element);
 
     this.content.addEventListener("scroll", (_: Event) => {

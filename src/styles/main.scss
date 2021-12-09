@@ -66,12 +66,15 @@ a {
 }
 
 #drag-hint {
-  width: math.div($icon-width, 16);
+  width: $icon-width;
   height: $icon-height;
   position: absolute;
-  background: red;
+  background: rgba(0, 0, 0, .3);
   pointer-events: none;
-  z-index: 9000;
+  border-radius: 15%;
+//  border: 0.25em solid rgba(0, 0, 0, .3);
+  box-shadow: 0 0 .5em rgba(0,0,0,1);
+  background-clip: padding-box;
 }
 
 .window {
@@ -381,7 +384,7 @@ a {
     padding: 0.1em;
   }
 
-  &:focus-within {
+  &:focus-within, &:focus {
     z-index: 10;
 
     img {

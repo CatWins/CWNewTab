@@ -10,6 +10,10 @@ export class Grid {
     this.hint.style.display = "none";
   }
 
+  static setHintParent(parent: Element): void {
+    if (parent != this.hint.parentElement) parent.prepend(this.hint);
+  }
+
   width: number;
   height: number;
   cellWidth: number;
@@ -45,8 +49,12 @@ export class Grid {
     if (index >= this._grid.length && this.type == GridType.STRICT) {
       gridCoords = this.getGridCoordinatesFromIndex(this._grid.length);
     }
-    Grid.hint.style.left = (gridCoords.x * this.cellWidth + this.offsetX).toString() + "px";
-    Grid.hint.style.top = (gridCoords.y * this.cellHeight + this.offsetY).toString() + "px";
+    if (gridCoords.x == this._gridWidth) {
+      gridCoords.x = 0;
+      gridCoords.y += 1;
+    }
+    Grid.hint.style.left = (gridCoords.x * this.cellWidth - Grid.hint.clientLeft).toString() + "px";
+    Grid.hint.style.top = (gridCoords.y * this.cellHeight - Grid.hint.clientTop).toString() + "px";
   }
 
   showHint(x: number, y: number): void {
