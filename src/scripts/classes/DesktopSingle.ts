@@ -57,6 +57,7 @@ export class Desktop extends ContainerMixin(class{}){
     this.order = [this.id];
     this.element = document.getElementById(this.id) as HTMLDivElement;
     DisplayPropertiesDB.load(this);
+    this.element.classList.add("desktop__default_color");
     this.content = this.element;
     this._contents = {};
     this.contextMenu = ContextMenu.init();
