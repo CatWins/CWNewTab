@@ -136,7 +136,7 @@ export class ContextMenu {
 
     //Display Properties
     itemDisplayProps.addEventListener("click", () => {
-      WindowDisplayProperties.get().open();
+      WindowDisplayProperties.get().then(w => w.open());
     });
 
     return ContextMenu;

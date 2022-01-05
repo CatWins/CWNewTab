@@ -9,10 +9,10 @@ export class WindowDisplayProperties extends WindowGeneric {
 
   static _instance: WindowDisplayProperties = undefined;
 
-  static get(): WindowDisplayProperties {
+  static async get(): Promise<WindowDisplayProperties> {
     if (this._instance == undefined) {
       this._instance = new WindowDisplayProperties();
-      this._instance.create();
+      await this._instance.create();
     }
     return this._instance;
   }
