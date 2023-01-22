@@ -1,9 +1,19 @@
 export function getContainerElementFromEventPath(event: any): HTMLDivElement {
-  return event.path.find((e: HTMLElement) => e.classList && (e.classList.contains("window") || e.id == "desktop"));
+  function getContainerElement(e: HTMLElement): HTMLDivElement {
+    if (e.classList && (e.classList.contains("window") || e.id == "desktop")) return e as HTMLDivElement;
+    if (e.parentElement) return getContainerElement(e.parentElement);
+    return null;
+  }
+  return getContainerElement(event.target);
 }
 
 export function getIconElementFromEventPath(event: any): HTMLDivElement {
-  return event.path.find((e: HTMLElement) => e.classList && e.classList.contains("icon"));
+  function getIconElement(e: HTMLElement): HTMLDivElement {
+    if (e.classList && e.classList.contains("icon")) return e as HTMLDivElement;
+    if (e.parentElement) return getIconElement(e.parentElement);
+    return null;
+  }
+  return getIconElement(event.target);
 }
 
 export function getRandomId(): string {
