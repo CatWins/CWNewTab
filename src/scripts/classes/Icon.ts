@@ -103,7 +103,7 @@ export class Icon extends MovableObject {
 
       this.icon.addEventListener('error', () => {tryNextIconType();});
       this.icon.addEventListener('load', () => {
-        if (this.icon.naturalWidth < 8) {
+        if (this.icon.naturalWidth < 8 && this.faviconType != IconType.DEFAULT) { //firefox always returns 0 for svg naturalWidth
           tryNextIconType()
         } else {
           FaviconTypeDB.save(this);
