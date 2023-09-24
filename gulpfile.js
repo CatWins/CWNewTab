@@ -6,8 +6,7 @@ const imagemin = require("gulp-imagemin");
 const uglify = require("gulp-uglify");
 const cleancss = require("gulp-clean-css");
 const del = require("del");
-const tar = require("gulp-tar");
-const gzip = require("gulp-gzip");
+const zip = require("gulp-zip");
 const inject = require("gulp-inject");
 const ws = require("ws");
 const browserify = require("browserify");
@@ -16,6 +15,7 @@ const ts = require("gulp-typescript");
 const tsProject = ts.createProject("tsconfig.json");
 const htmlmin = require("gulp-htmlmin");
 const through = require("through2");
+const { walkUpBindingElementsAndPatterns } = require("typescript");
 
 let wss = undefined;
 
@@ -88,7 +88,7 @@ function scripts_dev() {
   return tsProject.src().pipe(tsProject()).js.pipe(dest("./output/scripts"));
 }
 
-scripts_prod = series(
+var scripts_prod = series(
   scripts_temp,
   bundle,
   uglf
@@ -156,21 +156,23 @@ function server() {
 
 function archive() {
 	return src("./output/**/*")
-	.pipe(tar("build.tar"))
-	.pipe(gzip())
+	.pipe(zip("build.xpi", {compress:false}))
 	.pipe(dest("./"))
 }
 
-var clean = del.bind(null, ["output", "build.tar.gz"]);
+var clean = del.bind(null, ["output", "build.xpi"]);
 var build = series(clean, parallel(filters, icons, misc, html, images, styles, scripts_prod))
 var build_dev = series(clean, parallel(filters, icons, misc_dev, html_injected, images, styles, scripts_dev))
+
+var build_prod = series(build, archive)
 
 exports.html = html
 exports.misc = misc
 exports.images = images
 exports.styles = styles
 exports.scripts = scripts_prod
-exports.build = series(build, archive)
+exports.build = build_prod
+exports.build_dev = series(build_dev, server)
 exports.server = server
 exports.clean = clean
-exports.default = series(build_dev, server)
+exports.default = build_prod
