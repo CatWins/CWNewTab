@@ -9,12 +9,18 @@ CWNewTab is a browser extension that turns your stating page into win95 like des
 * Set your picture as wallpaper instead of plain background color
 
 ## Building
-Make sure you have Node.js installed as well as its package manager npm
-The code uses Gulp to automate workflow, so you need it to be installed globally
-`sudo npm install -g gulp`
-Then to install all devDependencies run from the base directory (the one contains gulpfile.js)
-`npm install --production=false`
-And finally
-`gulp`
+Make sure you have Node.js installed as well as its package manager npm.  
+The code also uses Gulp to automate workflow, so you need it to be installed globally:  
+  
+`sudo npm install -g gulp`  
+  
+Then to install all devDependencies run from the base directory (the one contains package.json):  
+  
+`npm install --production=false`  
+  
+And finally:  
+  
+`gulp`  
 
-The `build.xpi` file is firefox archive, and the unarchived files should be in `output` directory
+#### And you are done!
+The `build.xpi` file is firefox archive, and the unarchived files should be in `output` directory.
