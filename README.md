@@ -14,9 +14,9 @@ The code also uses Gulp to automate workflow, so you need it to be installed glo
   
 `sudo npm install -g gulp`  
   
-Then to install all devDependencies run from the base directory (the one contains package.json):  
+Then to install all dependencies run from the base directory (the one contains package.json):  
   
-`npm install --production=false`  
+`npm ci`  
   
 And finally:  
   
