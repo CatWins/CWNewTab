@@ -160,11 +160,17 @@ function archive() {
 	.pipe(dest("./"))
 }
 
+function archive_source() {
+  return src(["./src/**/*", ".browserslistrc", "README.md", "gulpfile.js", "inject.js", "package.json", "package-lock.json", "tsconfig.json"], {base: "."})
+  .pipe(zip("cwnewtab_source.zip"))
+  .pipe(dest("./"))
+}
+
 var clean = del.bind(null, ["output", "build.xpi"]);
 var build = series(clean, parallel(filters, icons, misc, html, images, styles, scripts_prod))
 var build_dev = series(clean, parallel(filters, icons, misc_dev, html_injected, images, styles, scripts_dev))
 
-var build_prod = series(build, archive)
+var build_prod = series(build, archive, archive_source)
 
 exports.html = html
 exports.misc = misc
