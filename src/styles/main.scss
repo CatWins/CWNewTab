@@ -262,6 +262,7 @@ a {
     margin: 0;
     border: 0;
     float: left;
+    display: none; //firefox fix
 
     &:checked + .radio-button::before {
       background: radial-gradient(black 0%, black 35%, white 40%);
