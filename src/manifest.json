@@ -3,7 +3,7 @@
   "description": "Turn your new tab page into win95 inspired desktop, where all your bookmarks are easy to reach",
   "manifest_version": 3,
   "name": "CWNewTab",
-  "version": "1.0",
+  "version": "1.0.1",
   "browser_specific_settings": {
     "gecko": {
       "id": "cw_newtab@example.com"
