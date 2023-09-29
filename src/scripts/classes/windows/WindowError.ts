@@ -10,8 +10,7 @@ export class WindowError extends WindowGeneric {
 
   constructor(name: string, x: number, y: number, args: {error?: Error, message?: string} = defaultArgs) {
     super(getRandomId(), name, x, y);
-    let message = (args.error != undefined) ? (args.error.stack || args.error.message) : (args.message || defaultArgs.message);
-    console.log(message);
+    let message = (args.error != undefined) ? (args.error.message || defaultArgs.message) : (args.message || defaultArgs.message);
     message = message
       .replaceAll("&", "&amp;")
       .replaceAll("<", "&lt")
