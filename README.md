@@ -8,6 +8,10 @@ CWNewTab is a browser extension that turns your stating page into win95 like des
 * Change the background color of the page
 * Set your picture as wallpaper instead of plain background color
 
+![](https://raw.githubusercontent.com/CatWins/CWNewTab/main/assets/background_color.gif)
+![](https://raw.githubusercontent.com/CatWins/CWNewTab/main/assets/folders_and_windows.gif)
+![](https://raw.githubusercontent.com/CatWins/CWNewTab/main/assets/moving_icon.gif)
+
 ## Building
 Make sure you have Node.js installed as well as its package manager npm.  
 The code also uses Gulp to automate workflow, so you need it to be installed globally:  
